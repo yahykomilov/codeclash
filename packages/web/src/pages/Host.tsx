@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, type FormEvent } from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
@@ -17,7 +17,7 @@ import { QRCodeSVG } from "qrcode.react"
 import confetti from "canvas-confetti"
 import { getSocket } from "../lib/socket"
 import { useAuth } from "../lib/auth"
-import { Button, Card } from "../components/ui"
+import { Button, Card, Input } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
 const SHAPES = ["▲", "◆", "●", "■"]
@@ -48,11 +48,15 @@ export default function Host() {
   const [scoringMode, setScoringMode] = useState<ScoringMode>("hybrid")
   const [privateRank, setPrivateRank] = useState(false)
   const [paused, setPaused] = useState(false)
+  const [topic, setTopic] = useState("")
+  const [generating, setGenerating] = useState(false)
+  const [aiError, setAiError] = useState("")
 
   useEffect(() => {
     const socket = getSocket()
     const onCreated = ({ pin }: { pin: string }) => {
       setPin(pin)
+      setGenerating(false)
       setPhase("lobby")
     }
     const onPlayers = (p: Player[]) => setPlayers(p)
@@ -79,6 +83,10 @@ export default function Host() {
       setPodium(podium)
       setPhase("finished")
     }
+    const onError = (key: string) => {
+      setGenerating(false)
+      setAiError(t(key))
+    }
     socket.on(S2C.GAME_CREATED, onCreated)
     socket.on(S2C.PLAYERS, onPlayers)
     socket.on(S2C.QUESTION, onQuestion)
@@ -88,6 +96,7 @@ export default function Host() {
     socket.on(S2C.FINISHED, onFinished)
     socket.on(S2C.PAUSED, onPaused)
     socket.on(S2C.RESUMED, onResumed)
+    socket.on(S2C.ERROR, onError)
     return () => {
       socket.off(S2C.GAME_CREATED, onCreated)
       socket.off(S2C.PLAYERS, onPlayers)
@@ -98,8 +107,9 @@ export default function Host() {
       socket.off(S2C.FINISHED, onFinished)
       socket.off(S2C.PAUSED, onPaused)
       socket.off(S2C.RESUMED, onResumed)
+      socket.off(S2C.ERROR, onError)
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if (phase !== "question" || paused) return
@@ -119,6 +129,19 @@ export default function Host() {
   }, [phase])
 
   const emit = (event: string, payload?: unknown) => getSocket().emit(event, payload)
+
+  function generateAiQuiz(e: FormEvent) {
+    e.preventDefault()
+    if (generating || topic.trim().length < 2) return
+    setAiError("")
+    setGenerating(true)
+    emit(C2S.HOST_GENERATE_QUIZ, {
+      topic: topic.trim(),
+      locale: i18n.language as Locale,
+      scoringMode,
+      privateRank,
+    })
+  }
 
   // ── Gate: real auth requires a signed-in user ─────────────
   if (enabled && !user) {
@@ -182,6 +205,7 @@ export default function Host() {
           {QUIZZES.map((quiz) => (
             <button
               key={quiz.id}
+              disabled={generating}
               onClick={() =>
                 emit(C2S.HOST_CREATE, {
                   quizId: quiz.id,
@@ -190,12 +214,36 @@ export default function Host() {
                   privateRank,
                 })
               }
-              className="rounded-2xl bg-white/5 p-6 text-left shadow-lg transition hover:-translate-y-1 hover:bg-white/10"
+              className="rounded-2xl bg-white/5 p-6 text-left shadow-lg transition hover:-translate-y-1 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-40"
             >
               <div className="text-xl font-extrabold">{t(`categories.${quiz.category}`)}</div>
               <div className="mt-1 text-sm opacity-70">{quiz.title}</div>
             </button>
           ))}
+        </div>
+
+        <div className="mx-auto w-full max-w-xl">
+          <p className="mb-2 text-center text-sm font-bold uppercase tracking-widest opacity-60">
+            {t("host.aiDivider")}
+          </p>
+          <form onSubmit={generateAiQuiz} className="flex flex-col gap-2 sm:flex-row">
+            <Input
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder={t("host.aiTopicPlaceholder")}
+              maxLength={80}
+              disabled={generating}
+            />
+            <Button
+              type="submit"
+              disabled={generating || topic.trim().length < 2}
+              className="whitespace-nowrap"
+            >
+              {generating ? t("host.aiGenerating") : t("host.aiGenerate")}
+            </Button>
+          </form>
+          <p className="mt-2 text-center text-xs opacity-50">{t("host.aiHint")}</p>
+          {aiError && <p className="mt-2 text-center text-sm text-answer-red">{aiError}</p>}
         </div>
       </div>
     )

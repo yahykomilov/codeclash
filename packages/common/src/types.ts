@@ -101,6 +101,13 @@ export interface HostCreatePayload {
   /** Chill mode: players see only their own rank, no public leaderboard stress. */
   privateRank?: boolean
 }
+export interface HostGenerateQuizPayload {
+  /** Free-text topic; server runs it through prompt-injection guards before use. */
+  topic: string
+  locale: Locale
+  scoringMode?: ScoringMode
+  privateRank?: boolean
+}
 export interface PlayerJoinPayload {
   pin: string
   username: string

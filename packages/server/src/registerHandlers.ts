@@ -7,9 +7,12 @@ import {
   S2C,
   sanitizeLocale,
   type HostCreatePayload,
+  type HostGenerateQuizPayload,
   type PlayerAnswerPayload,
   type PlayerJoinPayload,
 } from "@codeclash/common"
+import { generateQuiz } from "./ai/quizGenerator"
+import type { Game } from "./game/Game"
 import { GameManager } from "./game/GameManager"
 import { RateLimiter } from "./rateLimiter"
 
@@ -21,6 +24,7 @@ export function registerHandlers(io: Server): void {
   const joinLimiter = new RateLimiter(12, 1) // per IP: burst 12, ~1/s sustained
   const createLimiter = new RateLimiter(3, 0.2) // per socket: ~1 per 5s
   const answerLimiter = new RateLimiter(15, 5) // per socket
+  const aiLimiter = new RateLimiter(2, 0.05) // per socket: burst 2, ~1 per 20s — AI calls cost real money
   const pendingRemoval = new Map<string, NodeJS.Timeout>()
 
   io.on("connection", (socket: Socket) => {
@@ -39,16 +43,27 @@ export function registerHandlers(io: Server): void {
     const hostGame = () =>
       socket.data.role === "host" ? manager.get(socket.data.pin) : undefined
 
+    // "Play again" / re-host: drop the previous game this socket owned.
+    const dropPreviousGame = () => {
+      if (socket.data.role === "host" && socket.data.pin) {
+        socket.leave(socket.data.pin)
+        manager.remove(socket.data.pin)
+      }
+    }
+    const joinAsHost = (game: Game) => {
+      socket.join(game.pin)
+      socket.data.role = "host"
+      socket.data.pin = game.pin
+      socket.emit(S2C.GAME_CREATED, { pin: game.pin })
+      socket.emit(S2C.PLAYERS, game.playerList())
+    }
+
     socket.on(C2S.HOST_CREATE, (payload: HostCreatePayload) => {
       if (!createLimiter.allow(socket.id)) {
         socket.emit(S2C.ERROR, "errors.rateLimited")
         return
       }
-      // "Play again" / re-host: drop the previous game this socket owned.
-      if (socket.data.role === "host" && socket.data.pin) {
-        socket.leave(socket.data.pin)
-        manager.remove(socket.data.pin)
-      }
+      dropPreviousGame()
       const questions = resolveQuizQuestions(payload?.quizId ?? "mixed", 10)
       if (!questions.length) {
         socket.emit(S2C.ERROR, "errors.noQuestions")
@@ -66,11 +81,37 @@ export function registerHandlers(io: Server): void {
         socket.emit(S2C.ERROR, "errors.serverBusy")
         return
       }
-      socket.join(game.pin)
-      socket.data.role = "host"
-      socket.data.pin = game.pin
-      socket.emit(S2C.GAME_CREATED, { pin: game.pin })
-      socket.emit(S2C.PLAYERS, game.playerList())
+      joinAsHost(game)
+    })
+
+    socket.on(C2S.HOST_GENERATE_QUIZ, async (payload: HostGenerateQuizPayload) => {
+      if (!aiLimiter.allow(socket.id)) {
+        socket.emit(S2C.ERROR, "errors.rateLimited")
+        return
+      }
+      const locale = sanitizeLocale(payload?.locale)
+      let questions
+      try {
+        questions = await generateQuiz(payload?.topic, locale, 10)
+      } catch (err) {
+        socket.emit(S2C.ERROR, err instanceof Error ? err.message : "errors.aiFailed")
+        return
+      }
+      // Only drop the host's previous game once generation actually succeeded.
+      dropPreviousGame()
+      const game = manager.create(
+        io,
+        socket.id,
+        questions,
+        locale,
+        payload?.scoringMode ?? "hybrid",
+        Boolean(payload?.privateRank),
+      )
+      if (!game) {
+        socket.emit(S2C.ERROR, "errors.serverBusy")
+        return
+      }
+      joinAsHost(game)
     })
 
     socket.on(C2S.PLAYER_JOIN, (payload: PlayerJoinPayload) => {

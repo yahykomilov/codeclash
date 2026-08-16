@@ -56,7 +56,12 @@
     "scoringClassic": "Klassik",
     "scoringAccuracyHint": "Har qanday to'g'ri javobga teng ochko — tezlik muhim emas",
     "scoringHybridHint": "Asosan to'g'rilik uchun, ozgina tezlik bonusi",
-    "scoringClassicHint": "Tezlik muhim (Kahoot uslubida)"
+    "scoringClassicHint": "Tezlik muhim (Kahoot uslubida)",
+    "aiDivider": "yoki AI orqali yarating",
+    "aiTopicPlaceholder": "Mavzu, masalan «CSS Grid» yoki «React hooks»",
+    "aiGenerate": "Viktorina yaratish",
+    "aiGenerating": "Yaratilmoqda…",
+    "aiHint": "AI istalgan IT mavzusida 10 ta savol yozadi"
   },
   "game": {
     "question": "Savol",
@@ -108,6 +113,11 @@
     "authNotConfigured": "Avtorizatsiya sozlanmagan",
     "rateLimited": "Juda ko'p urinish — sekinroq",
     "serverBusy": "Server band, qayta urinib ko'ring",
-    "gameFull": "O'yin to'lgan"
+    "gameFull": "O'yin to'lgan",
+    "invalidTopic": "Avval mavzuni kiriting",
+    "topicShort": "Mavzu juda qisqa",
+    "topicLong": "Mavzu juda uzun (maksimum 80 belgi)",
+    "injectionBlocked": "Bu mavzu mos emas — oddiy mavzu nomini kiriting",
+    "aiFailed": "Viktorina yaratilmadi — boshqa mavzuni sinab ko'ring"
   }
 }

@@ -56,7 +56,12 @@
     "scoringClassic": "Classic",
     "scoringAccuracyHint": "Same points for any correct answer — speed ignored",
     "scoringHybridHint": "Mostly correctness, small speed bonus",
-    "scoringClassicHint": "Speed matters (Kahoot-style)"
+    "scoringClassicHint": "Speed matters (Kahoot-style)",
+    "aiDivider": "or generate with AI",
+    "aiTopicPlaceholder": "Topic, e.g. \"CSS Grid\" or \"React hooks\"",
+    "aiGenerate": "Generate quiz",
+    "aiGenerating": "Generating…",
+    "aiHint": "AI writes 10 questions on any IT topic you type"
   },
   "game": {
     "question": "Question",
@@ -108,6 +113,11 @@
     "authNotConfigured": "Auth is not configured",
     "rateLimited": "Too many attempts — slow down",
     "serverBusy": "Server is busy, try again",
-    "gameFull": "This game is full"
+    "gameFull": "This game is full",
+    "invalidTopic": "Enter a topic first",
+    "topicShort": "Topic is too short",
+    "topicLong": "Topic is too long (max 80 characters)",
+    "injectionBlocked": "That topic isn't allowed — try a plain subject name",
+    "aiFailed": "Couldn't generate a quiz — try a different topic"
   }
 }
