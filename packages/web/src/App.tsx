@@ -16,9 +16,12 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/5 bg-black/20 px-5 py-4 backdrop-blur-md">
-        <Link to="/" className="font-display text-2xl font-bold tracking-tight">
-          <span className="text-gradient">Code</span>
-          <span className="text-white">Clash</span>
+        <Link to="/" className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight">
+          <img src="/logo-icon.png" alt="" className="h-9 w-9 drop-shadow-[0_0_12px_rgba(139,92,255,0.55)]" />
+          <span>
+            <span className="text-gradient">Code</span>
+            <span className="text-white">Clash</span>
+          </span>
         </Link>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />

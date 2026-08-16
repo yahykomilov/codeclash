@@ -57,12 +57,12 @@
     "scoringAccuracyHint": "Har qanday to'g'ri javobga teng ochko — tezlik muhim emas",
     "scoringHybridHint": "Asosan to'g'rilik uchun, ozgina tezlik bonusi",
     "scoringClassicHint": "Tezlik muhim (Kahoot uslubida)",
+    "questions": "savol",
     "aiDivider": "yoki AI orqali yarating",
     "aiTopicPlaceholder": "Mavzu, masalan «CSS Grid» yoki «React hooks»",
     "aiGenerate": "Viktorina yaratish",
     "aiGenerating": "Yaratilmoqda…",
-    "aiHint": "AI istalgan IT mavzusida 10 ta savol yozadi",
-    "questions": "savol"
+    "aiHint": "AI istalgan IT mavzusida 10 ta savol yozadi"
   },
   "game": {
     "question": "Savol",

@@ -57,12 +57,12 @@
     "scoringAccuracyHint": "Равные очки за любой правильный ответ — скорость не важна",
     "scoringHybridHint": "В основном за правильность, небольшой бонус за скорость",
     "scoringClassicHint": "Скорость важна (как в Kahoot)",
+    "questions": "вопросов",
     "aiDivider": "или сгенерируй через AI",
     "aiTopicPlaceholder": "Тема, например «CSS Grid» или «Хуки React»",
     "aiGenerate": "Сгенерировать квиз",
     "aiGenerating": "Генерирую…",
-    "aiHint": "AI напишет 10 вопросов на любую IT-тему",
-    "questions": "вопросов"
+    "aiHint": "AI напишет 10 вопросов на любую IT-тему"
   },
   "game": {
     "question": "Вопрос",
