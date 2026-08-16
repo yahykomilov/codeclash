@@ -3,19 +3,31 @@
     "title": "CodeClash",
     "tagline": "IT bo'yicha jonli bellashuvlar — HTML, CSS, JS va React"
   },
+  "features": {
+    "honestScoring": "Minbosh ball",
+    "explanations": "Javoblarni tushuntiradi",
+    "unlimitedPlayers": "∞ o'yinchi",
+    "security": "Xavfsizlik 10/10",
+    "mobileOptimized": "Mobil optimallashtirilgan",
+    "bigScreen": "Katta ekran rejimi",
+    "scanToJoin": "Qo'shilish uchun skenlang"
+  },
   "home": {
     "joinTitle": "O'yinga kirish",
     "joinDesc": "PIN kiriting va telefondan o'ynang",
     "hostTitle": "Lobbi yaratish",
     "hostDesc": "Katta ekranda viktorina o'tkazing",
-    "player": "Men ishtirokchiman",
-    "host": "O'yin yaratish"
+    "player": "Men ishtiropman",
+    "host": "O'yin yaratish",
+    "demoQR": "Yoki demo uchun QR-ni skenlang",
+    "scanToJoin": "Qo'shilish uchun skenlang"
   },
   "auth": {
     "login": "Kirish",
     "register": "Ro'yxatdan o'tish",
     "email": "Pochta",
     "password": "Parol",
+    "passwordHint": "Kamida 6 belgi",
     "google": "Google bilan davom etish",
     "logout": "Chiqish",
     "haveAccount": "Akkauntingiz bormi?",
@@ -40,7 +52,9 @@
     "start": "O'yinni boshlash",
     "next": "Keyingi",
     "skip": "O'tkazib yuborish",
-    "showScreen": "Bu ekranni o'yinchilarga ko'rsating"
+    "showScreen": "Bu ekranni o'yinchilarga ko'rsating",
+    "pause": "Pauza",
+    "resume": "Davom etish"
   },
   "game": {
     "question": "Savol",

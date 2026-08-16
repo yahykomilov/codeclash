@@ -3,19 +3,31 @@
     "title": "CodeClash",
     "tagline": "Real-time IT quiz battles — HTML, CSS, JS & React"
   },
+  "features": {
+    "honestScoring": "Honest scoring",
+    "explanations": "Explains answers",
+    "unlimitedPlayers": "∞ players",
+    "security": "Security 10/10",
+    "mobileOptimized": "Mobile optimized",
+    "bigScreen": "Big screen mode",
+    "scanToJoin": "Scan to join"
+  },
   "home": {
     "joinTitle": "Join a game",
     "joinDesc": "Enter a PIN and play from your phone",
     "hostTitle": "Create a lobby",
     "hostDesc": "Host a quiz on the big screen",
     "player": "I'm a player",
-    "host": "Host a game"
+    "host": "Host a game",
+    "demoQR": "Or scan the QR for demo",
+    "scanToJoin": "Scan to join"
   },
   "auth": {
     "login": "Log in",
     "register": "Sign up",
     "email": "Email",
     "password": "Password",
+    "passwordHint": "Minimum 6 characters",
     "google": "Continue with Google",
     "logout": "Log out",
     "haveAccount": "Already have an account?",
@@ -40,7 +52,9 @@
     "start": "Start game",
     "next": "Next",
     "skip": "Skip",
-    "showScreen": "Show this screen to players"
+    "showScreen": "Show this screen to players",
+    "pause": "Pause",
+    "resume": "Resume"
   },
   "game": {
     "question": "Question",

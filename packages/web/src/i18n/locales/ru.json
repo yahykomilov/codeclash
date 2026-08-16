@@ -3,19 +3,31 @@
     "title": "CodeClash",
     "tagline": "Онлайн-баттлы по IT — HTML, CSS, JS и React"
   },
+  "features": {
+    "honestScoring": "Честный скоринг",
+    "explanations": "Объясняет ответы",
+    "unlimitedPlayers": "∞ игроков",
+    "security": "Безопасность 10/10",
+    "mobileOptimized": "Мобильная оптимизация",
+    "bigScreen": "Для большого экрана",
+    "scanToJoin": "Сканируй чтобы присоединиться"
+  },
   "home": {
     "joinTitle": "Войти в игру",
     "joinDesc": "Введи PIN и играй с телефона",
     "hostTitle": "Создать лобби",
     "hostDesc": "Проведи квиз на большом экране",
     "player": "Я участник",
-    "host": "Создать игру"
+    "host": "Создать игру",
+    "demoQR": "Или отсканируй QR для демо",
+    "scanToJoin": "Сканируй чтобы присоединиться"
   },
   "auth": {
     "login": "Войти",
     "register": "Регистрация",
     "email": "Почта",
     "password": "Пароль",
+    "passwordHint": "Минимум 6 символов",
     "google": "Продолжить с Google",
     "logout": "Выйти",
     "haveAccount": "Уже есть аккаунт?",
@@ -40,7 +52,9 @@
     "start": "Начать игру",
     "next": "Дальше",
     "skip": "Пропустить",
-    "showScreen": "Покажи этот экран игрокам"
+    "showScreen": "Покажи этот экран игрокам",
+    "pause": "Пауза",
+    "resume": "Продолжить"
   },
   "game": {
     "question": "Вопрос",
