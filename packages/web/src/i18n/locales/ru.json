@@ -46,6 +46,10 @@
     "skip": "Пропустить",
     "showScreen": "Покажи этот экран игрокам",
     "freePerks": "∞ игроков • все режимы бесплатно",
+    "pause": "Пауза",
+    "resume": "Продолжить",
+    "privateRank": "Приватный ранг",
+    "privateRankHint": "Игроки видят только свой ранг — меньше стресса",
     "scoring": "Начисление очков",
     "scoringAccuracy": "Честный",
     "scoringHybrid": "Сбалансированный",
@@ -73,7 +77,9 @@
     "readAloud": "Озвучить",
     "yourPoints": "Твои очки",
     "submit": "Подтвердить",
-    "pickMultiple": "Выбери все верные ответы"
+    "pickMultiple": "Выбери все верные ответы",
+    "paused": "Пауза",
+    "comeback": "Камбэк-бонус!"
   },
   "categories": {
     "html": "HTML",

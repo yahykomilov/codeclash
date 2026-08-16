@@ -39,6 +39,8 @@ export class Game {
   private displayCorrect: number[] = []
   private answerCount = 4
   private explanation?: string
+  private paused = false
+  private remainingMs = 0
 
   constructor(
     private readonly io: Server,
@@ -47,6 +49,7 @@ export class Game {
     private readonly questions: Question[],
     private readonly locale: Locale,
     private readonly scoringMode: ScoringMode,
+    private readonly privateRank: boolean,
     private readonly onEnd: () => void,
   ) {}
 
@@ -108,6 +111,7 @@ export class Game {
   private sendQuestion(): void {
     this.clearTimer()
     this.phase = "question"
+    this.paused = false
     this.answers.clear()
     this.questionStart = Date.now()
     const q = this.currentQuestion
@@ -161,15 +165,36 @@ export class Game {
 
   /** Close early once everyone still present has answered. */
   maybeAutoClose(): void {
-    if (this.phase !== "question") return
+    if (this.phase !== "question" || this.paused) return
     if (this.players.size > 0 && this.answers.size >= this.players.size) {
       this.closeQuestion()
     }
   }
 
+  /** Host pauses a live question — freezes the timer for all (Kahoot can't do this). */
+  pause(): void {
+    if (this.phase !== "question" || this.paused) return
+    this.clearTimer()
+    this.remainingMs = Math.max(
+      0,
+      this.currentQuestion.time * 1000 - (Date.now() - this.questionStart),
+    )
+    this.paused = true
+    this.io.to(this.pin).emit(S2C.PAUSED)
+  }
+
+  resume(): void {
+    if (this.phase !== "question" || !this.paused) return
+    this.paused = false
+    this.questionStart = Date.now() - (this.currentQuestion.time * 1000 - this.remainingMs)
+    this.timer = setTimeout(() => this.closeQuestion(), this.remainingMs)
+    this.io.to(this.pin).emit(S2C.RESUMED, { remainingSec: Math.ceil(this.remainingMs / 1000) })
+  }
+
   closeQuestion(): void {
     if (this.phase !== "question") return
     this.clearTimer()
+    this.paused = false
     this.phase = "reveal"
     const q = this.currentQuestion
     const votes = new Array<number>(this.answerCount).fill(0)
@@ -180,16 +205,28 @@ export class Game {
       }
     }
 
+    // Comeback boost: the trailing half (behind the leader) earn +30% when correct.
+    const maxPoints = Math.max(0, ...this.playerList().map((p) => p.points))
+    const ascending = this.playerList().sort((a, b) => a.points - b.points)
+    const half = Math.floor(ascending.length / 2)
+    const laggards = new Set(
+      ascending.slice(0, half).filter((p) => p.points < maxPoints).map((p) => p.id),
+    )
+    const comebackFor = new Map<string, boolean>()
+
     for (const [id, player] of this.players) {
       const rec = this.answers.get(id)
       const correct = rec ? isAnswerCorrect(rec.answers, this.displayCorrect) : false
-      const gained = computeScore({
+      let gained = computeScore({
         correct,
         elapsedMs: rec?.elapsedMs ?? q.time * 1000,
         windowMs: q.time * 1000,
         streak: player.streak,
         mode: this.scoringMode,
       })
+      const boosted = correct && gained > 0 && laggards.has(id)
+      if (boosted) gained = Math.round(gained * 1.3)
+      comebackFor.set(id, boosted)
       player.streak = correct ? player.streak + 1 : 0
       player.points += gained
       player.lastGain = gained
@@ -202,7 +239,9 @@ export class Game {
       votes,
       explanation: this.explanation,
     })
-    this.io.to(this.pin).emit(S2C.LEADERBOARD, board)
+    // Chill mode: hide the public leaderboard from players (host still sees it).
+    if (this.privateRank) this.io.to(this.hostId).emit(S2C.LEADERBOARD, board)
+    else this.io.to(this.pin).emit(S2C.LEADERBOARD, board)
 
     for (const [id, player] of this.players) {
       const rank = board.find((b) => b.id === id)?.rank ?? this.players.size
@@ -212,6 +251,7 @@ export class Game {
         points: player.points,
         rank,
         streak: player.streak,
+        comeback: comebackFor.get(id) ?? false,
       })
     }
   }

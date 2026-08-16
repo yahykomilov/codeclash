@@ -40,6 +40,8 @@ export default function Host() {
   const [board, setBoard] = useState<LeaderboardEntry[]>([])
   const [podium, setPodium] = useState<LeaderboardEntry[]>([])
   const [scoringMode, setScoringMode] = useState<ScoringMode>("hybrid")
+  const [privateRank, setPrivateRank] = useState(false)
+  const [paused, setPaused] = useState(false)
 
   useEffect(() => {
     const socket = getSocket()
@@ -52,10 +54,16 @@ export default function Host() {
       setQuestion(q)
       setAnswered(0)
       setReveal(null)
+      setPaused(false)
       setSecondsLeft(q.time)
       setPhase("question")
     }
     const onCount = (n: number) => setAnswered(n)
+    const onPaused = () => setPaused(true)
+    const onResumed = ({ remainingSec }: { remainingSec: number }) => {
+      setSecondsLeft(remainingSec)
+      setPaused(false)
+    }
     const onReveal = (r: RevealPayload) => {
       setReveal(r)
       setPhase("reveal")
@@ -72,6 +80,8 @@ export default function Host() {
     socket.on(S2C.REVEAL, onReveal)
     socket.on(S2C.LEADERBOARD, onBoard)
     socket.on(S2C.FINISHED, onFinished)
+    socket.on(S2C.PAUSED, onPaused)
+    socket.on(S2C.RESUMED, onResumed)
     return () => {
       socket.off(S2C.GAME_CREATED, onCreated)
       socket.off(S2C.PLAYERS, onPlayers)
@@ -80,14 +90,16 @@ export default function Host() {
       socket.off(S2C.REVEAL, onReveal)
       socket.off(S2C.LEADERBOARD, onBoard)
       socket.off(S2C.FINISHED, onFinished)
+      socket.off(S2C.PAUSED, onPaused)
+      socket.off(S2C.RESUMED, onResumed)
     }
   }, [])
 
   useEffect(() => {
-    if (phase !== "question") return
+    if (phase !== "question" || paused) return
     const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000)
     return () => clearInterval(id)
-  }, [phase, question])
+  }, [phase, question, paused])
 
   useEffect(() => {
     if (phase !== "finished") return
@@ -147,6 +159,19 @@ export default function Host() {
           <p className="mt-2 text-center text-xs opacity-60">{t(`host.scoring${cap(scoringMode)}Hint`)}</p>
         </div>
 
+        <button
+          onClick={() => setPrivateRank((v) => !v)}
+          className="mx-auto flex items-center gap-3 rounded-full bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
+        >
+          <span
+            className={`flex h-5 w-9 items-center rounded-full p-0.5 transition ${privateRank ? "bg-brand" : "bg-white/20"}`}
+          >
+            <span className={`h-4 w-4 rounded-full bg-white transition ${privateRank ? "translate-x-4" : ""}`} />
+          </span>
+          <span className="font-bold">{t("host.privateRank")}</span>
+          <span className="opacity-60">— {t("host.privateRankHint")}</span>
+        </button>
+
         <div className="grid gap-4 sm:grid-cols-2">
           {QUIZZES.map((quiz) => (
             <button
@@ -156,6 +181,7 @@ export default function Host() {
                   quizId: quiz.id,
                   locale: i18n.language as Locale,
                   scoringMode,
+                  privateRank,
                 })
               }
               className="rounded-2xl bg-white/5 p-6 text-left shadow-lg transition hover:-translate-y-1 hover:bg-white/10"
@@ -232,6 +258,11 @@ export default function Host() {
             />
           </div>
         )}
+        {paused && (
+          <div className="mb-4 rounded-xl bg-yellow-500/20 py-2 text-center text-xl font-black text-yellow-200">
+            ⏸ {t("game.paused")}
+          </div>
+        )}
         <div className="flex flex-1 flex-col items-center justify-center gap-8">
           <h1 className="max-w-3xl text-center text-3xl font-black sm:text-4xl">{question.question}</h1>
           <div className="grid w-full max-w-3xl grid-cols-2 gap-4">
@@ -246,7 +277,13 @@ export default function Host() {
             ))}
           </div>
         </div>
-        <div className="mt-4 flex justify-center">
+        <div className="mt-4 flex justify-center gap-3">
+          <Button
+            onClick={() => emit(paused ? C2S.HOST_RESUME : C2S.HOST_PAUSE)}
+            className="bg-white/10 hover:bg-white/20"
+          >
+            {paused ? t("host.resume") : t("host.pause")}
+          </Button>
           <Button onClick={() => emit(C2S.HOST_SKIP)} className="bg-white/10 hover:bg-white/20">
             {t("host.skip")}
           </Button>

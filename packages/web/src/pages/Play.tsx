@@ -31,6 +31,7 @@ export default function Play() {
   const [locked, setLocked] = useState(false)
   const [result, setResult] = useState<PlayerResult | null>(null)
   const [secondsLeft, setSecondsLeft] = useState(0)
+  const [paused, setPaused] = useState(false)
   const [message, setMessage] = useState("")
   const [explanation, setExplanation] = useState<string | undefined>()
   const [board, setBoard] = useState<LeaderboardEntry[]>([])
@@ -49,11 +50,17 @@ export default function Play() {
       setLocked(false)
       setResult(null)
       setExplanation(undefined)
+      setPaused(false)
       setSecondsLeft(q.time)
       setPhase("question")
     }
     const onReveal = (r: RevealPayload) => setExplanation(r.explanation)
     const onBoard = (b: LeaderboardEntry[]) => setBoard(b)
+    const onPaused = () => setPaused(true)
+    const onResumed = ({ remainingSec }: { remainingSec: number }) => {
+      setSecondsLeft(remainingSec)
+      setPaused(false)
+    }
     const onResult = (r: PlayerResult) => {
       lastRank.current = r.rank
       lastPoints.current = r.points
@@ -73,6 +80,8 @@ export default function Play() {
     socket.on(S2C.FINISHED, onFinished)
     socket.on(S2C.KICKED, onKicked)
     socket.on(S2C.ERROR, onError)
+    socket.on(S2C.PAUSED, onPaused)
+    socket.on(S2C.RESUMED, onResumed)
     return () => {
       socket.off(S2C.QUESTION, onQuestion)
       socket.off(S2C.REVEAL, onReveal)
@@ -81,14 +90,16 @@ export default function Play() {
       socket.off(S2C.FINISHED, onFinished)
       socket.off(S2C.KICKED, onKicked)
       socket.off(S2C.ERROR, onError)
+      socket.off(S2C.PAUSED, onPaused)
+      socket.off(S2C.RESUMED, onResumed)
     }
   }, [nav, navigate, t])
 
   useEffect(() => {
-    if (phase !== "question") return
+    if (phase !== "question" || paused) return
     const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000)
     return () => clearInterval(id)
-  }, [phase, question])
+  }, [phase, question, paused])
 
   useEffect(() => {
     if (phase === "result" && result) {
@@ -98,7 +109,7 @@ export default function Play() {
   }, [phase, result])
 
   function pick(i: number) {
-    if (locked || !question) return
+    if (locked || paused || !question) return
     if (question.type === "multi") {
       setSelected((prev) => (prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i]))
     } else {
@@ -140,7 +151,13 @@ export default function Play() {
             style={{ width: `${(secondsLeft / Math.max(1, question.time)) * 100}%` }}
           />
         </div>
-        {locked ? (
+        {paused ? (
+          <Centered>
+            <h2 className="text-center text-3xl font-black text-yellow-200">
+              ⏸ {t("game.paused")}
+            </h2>
+          </Centered>
+        ) : locked ? (
           <Centered>
             <h2 className="animate-pulse text-center text-2xl font-bold">
               {t("game.waitOthers")}
@@ -200,6 +217,9 @@ export default function Play() {
           </h1>
           {result.gained > 0 && (
             <p className="mt-2 text-2xl font-bold">+{result.gained}</p>
+          )}
+          {result.comeback && (
+            <p className="mt-1 text-sm font-bold text-yellow-300">🚀 {t("game.comeback")}</p>
           )}
           <p className="mt-4 opacity-80">
             {t("game.rank")}: <b>#{result.rank}</b> · {result.points} {t("game.points")}

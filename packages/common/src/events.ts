@@ -8,6 +8,8 @@ export const C2S = {
   HOST_NEXT: "host:next",
   HOST_SKIP: "host:skip",
   HOST_KICK: "host:kick",
+  HOST_PAUSE: "host:pause",
+  HOST_RESUME: "host:resume",
   HOST_RECONNECT: "host:reconnect",
   PLAYER_JOIN: "player:join",
   PLAYER_ANSWER: "player:answer",
@@ -22,6 +24,8 @@ export const S2C = {
   // Flow
   STARTED: "game:started",
   QUESTION: "game:question",
+  PAUSED: "game:paused",
+  RESUMED: "game:resumed",
   TIMER: "game:timer",
   ANSWER_COUNT: "game:answerCount",
   REVEAL: "game:reveal",

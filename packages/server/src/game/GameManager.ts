@@ -16,11 +16,12 @@ export class GameManager {
     questions: Question[],
     locale: Locale,
     scoringMode: ScoringMode,
+    privateRank: boolean,
   ): Game | null {
     if (this.games.size >= MAX_GAMES) return null
     const pin = generatePin((p) => this.games.has(p))
     // onEnd auto-removes the game when it finishes, so rooms don't leak.
-    const game = new Game(io, pin, hostId, questions, locale, scoringMode, () =>
+    const game = new Game(io, pin, hostId, questions, locale, scoringMode, privateRank, () =>
       this.remove(pin),
     )
     this.games.set(pin, game)

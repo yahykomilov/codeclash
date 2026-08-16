@@ -46,6 +46,10 @@
     "skip": "Skip",
     "showScreen": "Show this screen to players",
     "freePerks": "∞ players • all modes free",
+    "pause": "Pause",
+    "resume": "Resume",
+    "privateRank": "Private rank",
+    "privateRankHint": "Players see only their own rank — less stress",
     "scoring": "Scoring",
     "scoringAccuracy": "Fair",
     "scoringHybrid": "Balanced",
@@ -73,7 +77,9 @@
     "readAloud": "Read aloud",
     "yourPoints": "Your score",
     "submit": "Submit",
-    "pickMultiple": "Pick all correct answers"
+    "pickMultiple": "Pick all correct answers",
+    "paused": "Paused",
+    "comeback": "Comeback bonus!"
   },
   "categories": {
     "html": "HTML",

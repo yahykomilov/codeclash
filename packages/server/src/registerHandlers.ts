@@ -60,6 +60,7 @@ export function registerHandlers(io: Server): void {
         questions,
         sanitizeLocale(payload?.locale),
         payload?.scoringMode ?? "hybrid",
+        Boolean(payload?.privateRank),
       )
       if (!game) {
         socket.emit(S2C.ERROR, "errors.serverBusy")
@@ -113,6 +114,8 @@ export function registerHandlers(io: Server): void {
 
     socket.on(C2S.HOST_NEXT, () => hostGame()?.next())
     socket.on(C2S.HOST_SKIP, () => hostGame()?.closeQuestion())
+    socket.on(C2S.HOST_PAUSE, () => hostGame()?.pause())
+    socket.on(C2S.HOST_RESUME, () => hostGame()?.resume())
 
     socket.on(C2S.HOST_KICK, (payload: { playerId: string }) => {
       const game = hostGame()

@@ -89,6 +89,8 @@ export interface PlayerResult {
   points: number
   rank: number
   streak: number
+  /** True when the comeback bonus boosted this gain (player was trailing). */
+  comeback?: boolean
 }
 
 // ── Socket payloads ──────────────────────────────────────
@@ -96,6 +98,8 @@ export interface HostCreatePayload {
   quizId: string
   locale: Locale
   scoringMode?: ScoringMode
+  /** Chill mode: players see only their own rank, no public leaderboard stress. */
+  privateRank?: boolean
 }
 export interface PlayerJoinPayload {
   pin: string
