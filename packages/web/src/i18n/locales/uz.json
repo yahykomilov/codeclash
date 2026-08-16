@@ -18,7 +18,7 @@
   "auth": {
     "login": "Kirish",
     "register": "Ro'yxatdan o'tish",
-    "email": "Pochta",
+    "email": "Email",
     "password": "Parol",
     "google": "Google bilan davom etish",
     "logout": "Chiqish",
@@ -61,7 +61,8 @@
     "aiTopicPlaceholder": "Mavzu, masalan «CSS Grid» yoki «React hooks»",
     "aiGenerate": "Viktorina yaratish",
     "aiGenerating": "Yaratilmoqda…",
-    "aiHint": "AI istalgan IT mavzusida 10 ta savol yozadi"
+    "aiHint": "AI istalgan IT mavzusida 10 ta savol yozadi",
+    "questions": "savol"
   },
   "game": {
     "question": "Savol",

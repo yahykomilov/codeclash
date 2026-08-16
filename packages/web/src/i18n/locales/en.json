@@ -61,7 +61,8 @@
     "aiTopicPlaceholder": "Topic, e.g. \"CSS Grid\" or \"React hooks\"",
     "aiGenerate": "Generate quiz",
     "aiGenerating": "Generating…",
-    "aiHint": "AI writes 10 questions on any IT topic you type"
+    "aiHint": "AI writes 10 questions on any IT topic you type",
+    "questions": "questions"
   },
   "game": {
     "question": "Question",

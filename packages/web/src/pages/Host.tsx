@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import {
   C2S,
+  QUESTIONS,
   QUIZZES,
   S2C,
   SCORING_MODES,
@@ -29,6 +30,52 @@ const GLOW = [
 ]
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+
+/** Per-subject visual identity for the quiz-pick cards — reuses the existing palette only. */
+const QUIZ_META: Record<
+  string,
+  { icon: string; badge: string; glow: string; ring: string; accent: string; span?: string }
+> = {
+  mixed: {
+    icon: "🧩",
+    badge: "bg-brand/25 text-brand-light",
+    glow: "bg-brand",
+    ring: "hover:ring-brand/40",
+    accent: "from-brand/20 via-neon-magenta/10 to-neon-cyan/10",
+    span: "sm:col-span-2",
+  },
+  html: {
+    icon: "🌐",
+    badge: "bg-answer-red/20 text-answer-red",
+    glow: "bg-answer-red",
+    ring: "hover:ring-answer-red/40",
+    accent: "from-answer-red/15 to-transparent",
+  },
+  css: {
+    icon: "🎨",
+    badge: "bg-neon-cyan/20 text-neon-cyan",
+    glow: "bg-neon-cyan",
+    ring: "hover:ring-neon-cyan/40",
+    accent: "from-neon-cyan/15 to-transparent",
+  },
+  js: {
+    icon: "⚡",
+    badge: "bg-answer-yellow/20 text-answer-yellow",
+    glow: "bg-answer-yellow",
+    ring: "hover:ring-answer-yellow/40",
+    accent: "from-answer-yellow/15 to-transparent",
+  },
+  react: {
+    icon: "⚛️",
+    badge: "bg-neon-magenta/20 text-neon-magenta",
+    glow: "bg-neon-magenta",
+    ring: "hover:ring-neon-magenta/40",
+    accent: "from-neon-magenta/15 to-transparent",
+  },
+}
+
+const quizQuestionCount = (category: string) =>
+  category === "mixed" ? QUESTIONS.length : QUESTIONS.filter((q) => q.category === category).length
 
 type Phase = "pick" | "lobby" | "question" | "reveal" | "finished"
 
@@ -202,24 +249,43 @@ export default function Host() {
         </button>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          {QUIZZES.map((quiz) => (
-            <button
-              key={quiz.id}
-              disabled={generating}
-              onClick={() =>
-                emit(C2S.HOST_CREATE, {
-                  quizId: quiz.id,
-                  locale: i18n.language as Locale,
-                  scoringMode,
-                  privateRank,
-                })
-              }
-              className="rounded-2xl bg-white/5 p-6 text-left shadow-lg transition hover:-translate-y-1 hover:bg-white/10 disabled:pointer-events-none disabled:opacity-40"
-            >
-              <div className="text-xl font-extrabold">{t(`categories.${quiz.category}`)}</div>
-              <div className="mt-1 text-sm opacity-70">{quiz.title}</div>
-            </button>
-          ))}
+          {QUIZZES.map((quiz, i) => {
+            const meta = QUIZ_META[quiz.category] ?? QUIZ_META.mixed
+            const count = quizQuestionCount(quiz.category)
+            return (
+              <button
+                key={quiz.id}
+                disabled={generating}
+                style={{ animationDelay: `${i * 60}ms` }}
+                onClick={() =>
+                  emit(C2S.HOST_CREATE, {
+                    quizId: quiz.id,
+                    locale: i18n.language as Locale,
+                    scoringMode,
+                    privateRank,
+                  })
+                }
+                className={`group relative animate-rise overflow-hidden rounded-2xl bg-gradient-to-br p-6 text-left shadow-lg ring-1 ring-white/10 transition duration-200 hover:-translate-y-1 disabled:pointer-events-none disabled:opacity-40 ${meta.accent} ${meta.ring} ${meta.span ?? ""}`}
+              >
+                <span
+                  className={`pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full opacity-20 blur-3xl transition-opacity duration-300 group-hover:opacity-35 ${meta.glow}`}
+                />
+                <div className="relative flex items-center gap-4">
+                  <span className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-2xl ${meta.badge}`}>
+                    {meta.icon}
+                  </span>
+                  <div>
+                    <div className="font-display text-xl font-extrabold">{t(`categories.${quiz.category}`)}</div>
+                    <div className="mt-0.5 text-sm opacity-70">{quiz.title}</div>
+                  </div>
+                </div>
+                <div className="relative mt-4 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-50">
+                  <span>{count}</span>
+                  <span>{t("host.questions")}</span>
+                </div>
+              </button>
+            )
+          })}
         </div>
 
         <div className="mx-auto w-full max-w-xl">

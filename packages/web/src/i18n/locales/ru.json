@@ -61,7 +61,8 @@
     "aiTopicPlaceholder": "Тема, например «CSS Grid» или «Хуки React»",
     "aiGenerate": "Сгенерировать квиз",
     "aiGenerating": "Генерирую…",
-    "aiHint": "AI напишет 10 вопросов на любую IT-тему"
+    "aiHint": "AI напишет 10 вопросов на любую IT-тему",
+    "questions": "вопросов"
   },
   "game": {
     "question": "Вопрос",
