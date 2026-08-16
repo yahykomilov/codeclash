@@ -15,6 +15,12 @@ Boshlovchi katta ekranda savol chiqaradi, butun sinf telefondan javob beradi.
 
 ---
 
+# Killer-xususiyat: AI bilan istalgan mavzuda viktorina
+O'qituvchi mavzuni yozadi ("CSS Grid", "Python asoslari" — nima bo'lsa ham) — AI 10 soniyada 10 ta savol tayyorlaydi. Tayyor bank ham bor (HTML/CSS/JS/React, 40 savol × 3 til), lekin bu — haqiqiy "test konstruktori", faqat dasturlashga qisilib qolmaydi.
+Xavfsizlik jiddiy olindi: kiritilgan mavzu 3 qatlamli himoyadan o'tadi (zararli buyruqlarni aniqlash → ajratilgan promt → AI javobini qat'iy tekshirish) — shuning uchun mavzu maydoniga nima yozilsa ham, AI hech qachon "o'z vazifasidan chiqib ketmaydi".
+
+---
+
 # Bor edi / Bo'ldi
 Oldin: qog'oz test → zerikish → o'qituvchi qo'lda tekshiradi.
 Endi: telefonda jonli musobaqa → 30 soniyada butun sinf → natija darrov ekranda.
@@ -22,19 +28,23 @@ Endi: telefonda jonli musobaqa → 30 soniyada butun sinf → natija darrov ekra
 ---
 
 # Uni harakatda ko'ring
-2 daqiqalik demo: PIN bilan kirish → savol → telefondan javob → ochko → podium.
+2 daqiqalik demo: mavzu kiritish yoki PIN bilan kirish → savol → telefondan javob → ochko → podium.
 
 ---
 
-# Qanday ishlaydi
+# Qanday ishlaydi — va nega ishonch bilan aytamiz
 React interfeys (telefon va katta ekran) ↔ jonli server (Socket.io) barcha o'yinchini bir soniyada birlashtiradi.
-Kirish — email yoki Google orqali. Interfeys 3 tilda: o'zbek, rus, ingliz.
+Bu — so'z emas: wifi uzilishini haqiqiy testda tekshirdik — o'yinchi qayta ulanadi, ochkosi yo'qolmaydi, hatto ekrandagi soniyalar ham to'g'ri joyidan davom etadi. Kirish — email yoki Google orqali. Interfeys 3 tilda: o'zbek, rus, ingliz.
 
 ---
 
-# Ochko va kurash mexanikasi
-To'g'ri javob = ball, qancha tez — shuncha ko'p (maksimum 1000).
-Ketma-ket to'g'ri javob (streak) = qo'shimcha bonus. Oxirida — liderlar jadvali va podium.
+# Nega Kahoot emas, aynan CodeClash
+Kahoot'ning eng ko'p tanqid qilinadigan joylarini bittalab yopdik:
+- **Adolatli ballash** — 3 rejim (faqat to'g'rilik uchun ham bor, tezlik shart emas)
+- **Aldashga qarshi** — javob joylari har safar aralashtiriladi, ekranga qarab ko'chirib bo'lmaydi
+- **To'xtatish/davom ettirish** — boshlovchi istalgan payt pauza qila oladi, Kahoot buni bilmaydi
+- **"Kambek" bonusi** — orqada qolgan o'yinchiga qo'shimcha ochko, oxirigacha qiziqarli bo'lib qoladi
+- **Har savoldan keyin tushuntirish** — nima uchun to'g'ri javob shu, darhol ko'rinadi
 
 ---
 
@@ -47,9 +57,9 @@ Abdulaziz — video va prezentatsiya
 ---
 
 # Nega biz yutamiz
-Realtime haqiqatan ishlaydi — ko'plarda uziladi, bizda yo'q.
+AI bilan istalgan mavzuda viktorina — bu aynan "test konstruktori" mavzusining o'zi.
+Realtime haqiqatan ishlaydi — buni haqiqiy testlar bilan isbotladik, so'z bilan emas.
 Bitta aniq fokus — bitta to'liq mahsulot, yarim ishlaydiganlar emas.
-Tayyor foyda — o'qituvchi bugun sinfda ishlata oladi.
 Ko'p tilli — o'zbek maktablari uchun ham tayyor.
 
 CodeClash · DevX Command · Rahmat!
