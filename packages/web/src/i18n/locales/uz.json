@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "CodeClash",
+    "tagline": "IT bo'yicha jonli bellashuvlar — HTML, CSS, JS va React"
+  },
+  "home": {
+    "joinTitle": "O'yinga kirish",
+    "joinDesc": "PIN kiriting va telefondan o'ynang",
+    "hostTitle": "Lobbi yaratish",
+    "hostDesc": "Katta ekranda viktorina o'tkazing",
+    "player": "Men ishtirokchiman",
+    "host": "O'yin yaratish"
+  },
+  "auth": {
+    "login": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+    "email": "Pochta",
+    "password": "Parol",
+    "google": "Google bilan davom etish",
+    "logout": "Chiqish",
+    "haveAccount": "Akkauntingiz bormi?",
+    "noAccount": "Hali akkaunt yo'qmi?",
+    "signInToHost": "O'yin yaratish uchun kiring",
+    "or": "yoki",
+    "notConfigured": "Avtorizatsiya hali sozlanmagan — demo rejim yoqilgan."
+  },
+  "join": {
+    "title": "Bellashuvga qo'shilish",
+    "pin": "O'yin PIN kodi",
+    "username": "Taxallusingiz",
+    "enter": "Kirish",
+    "waiting": "Boshlovchi boshlashini kutmoqdamiz…"
+  },
+  "host": {
+    "pickQuiz": "Viktorinani tanlang",
+    "create": "Lobbi yaratish",
+    "pinLabel": "O'yin PIN kodi",
+    "players": "O'yinchilar",
+    "noPlayers": "O'yinchilar qo'shilishini kutmoqdamiz…",
+    "start": "O'yinni boshlash",
+    "next": "Keyingi",
+    "skip": "O'tkazib yuborish",
+    "showScreen": "Bu ekranni o'yinchilarga ko'rsating"
+  },
+  "game": {
+    "question": "Savol",
+    "of": "dan",
+    "answered": "javob berdi",
+    "correct": "To'g'ri!",
+    "wrong": "Noto'g'ri",
+    "points": "ochko",
+    "rank": "O'rin",
+    "streak": "seriya",
+    "leaderboard": "Reyting jadvali",
+    "podium": "Pyedestal",
+    "finished": "O'yin tugadi!",
+    "playAgain": "Yana o'ynash",
+    "waitOthers": "Javob qabul qilindi — boshqalarni kutmoqdamiz…",
+    "pickAnswer": "Javobni tanlang"
+  },
+  "categories": {
+    "html": "HTML",
+    "css": "CSS",
+    "js": "JavaScript",
+    "react": "React",
+    "mixed": "To'liq to'plam"
+  },
+  "common": {
+    "loading": "Yuklanmoqda…",
+    "back": "Orqaga",
+    "home": "Bosh sahifa"
+  },
+  "errors": {
+    "gameNotFound": "O'yin topilmadi — PIN kodni tekshiring",
+    "gameStarted": "O'yin allaqachon boshlangan",
+    "invalidPin": "PIN 6 ta raqamdan iborat bo'lishi kerak",
+    "usernameShort": "Taxallus juda qisqa",
+    "usernameLong": "Taxallus juda uzun",
+    "hostLeft": "Boshlovchi chiqib ketdi — o'yin tugadi",
+    "noQuestions": "Bu viktorinada savollar yo'q",
+    "invalidInput": "Noto'g'ri ma'lumot",
+    "invalidEmail": "Noto'g'ri pochta",
+    "passwordShort": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
+    "authNotConfigured": "Avtorizatsiya sozlanmagan"
+  }
+}

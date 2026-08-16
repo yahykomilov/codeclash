@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "CodeClash",
+    "tagline": "Real-time IT quiz battles — HTML, CSS, JS & React"
+  },
+  "home": {
+    "joinTitle": "Join a game",
+    "joinDesc": "Enter a PIN and play from your phone",
+    "hostTitle": "Create a lobby",
+    "hostDesc": "Host a quiz on the big screen",
+    "player": "I'm a player",
+    "host": "Host a game"
+  },
+  "auth": {
+    "login": "Log in",
+    "register": "Sign up",
+    "email": "Email",
+    "password": "Password",
+    "google": "Continue with Google",
+    "logout": "Log out",
+    "haveAccount": "Already have an account?",
+    "noAccount": "No account yet?",
+    "signInToHost": "Sign in to host a game",
+    "or": "or",
+    "notConfigured": "Auth is not configured yet — demo mode is on."
+  },
+  "join": {
+    "title": "Join the battle",
+    "pin": "Game PIN",
+    "username": "Your nickname",
+    "enter": "Enter",
+    "waiting": "Waiting for the host to start…"
+  },
+  "host": {
+    "pickQuiz": "Pick a quiz",
+    "create": "Create lobby",
+    "pinLabel": "Game PIN",
+    "players": "Players",
+    "noPlayers": "Waiting for players to join…",
+    "start": "Start game",
+    "next": "Next",
+    "skip": "Skip",
+    "showScreen": "Show this screen to players"
+  },
+  "game": {
+    "question": "Question",
+    "of": "of",
+    "answered": "answered",
+    "correct": "Correct!",
+    "wrong": "Wrong",
+    "points": "points",
+    "rank": "Rank",
+    "streak": "streak",
+    "leaderboard": "Leaderboard",
+    "podium": "Podium",
+    "finished": "Game over!",
+    "playAgain": "Play again",
+    "waitOthers": "Answer locked in — waiting for others…",
+    "pickAnswer": "Pick your answer"
+  },
+  "categories": {
+    "html": "HTML",
+    "css": "CSS",
+    "js": "JavaScript",
+    "react": "React",
+    "mixed": "Full Stack Mix"
+  },
+  "common": {
+    "loading": "Loading…",
+    "back": "Back",
+    "home": "Home"
+  },
+  "errors": {
+    "gameNotFound": "Game not found — check the PIN",
+    "gameStarted": "This game already started",
+    "invalidPin": "PIN must be 6 digits",
+    "usernameShort": "Nickname is too short",
+    "usernameLong": "Nickname is too long",
+    "hostLeft": "The host left — game ended",
+    "noQuestions": "This quiz has no questions",
+    "invalidInput": "Invalid input",
+    "invalidEmail": "Invalid email",
+    "passwordShort": "Password must be at least 6 characters",
+    "authNotConfigured": "Auth is not configured"
+  }
+}

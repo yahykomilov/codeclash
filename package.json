@@ -1,0 +1,25 @@
+{
+  "name": "codeclash",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "CodeClash — realtime IT quiz battle (HTML/CSS/JS/React). Kahoot-style multiplayer for the DevX Command hackathon.",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c green,cyan \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm run dev -w @codeclash/server",
+    "dev:web": "npm run dev -w @codeclash/web",
+    "build": "npm run build -w @codeclash/web",
+    "start": "npm run start -w @codeclash/server",
+    "typecheck": "tsc --noEmit -p packages/common/tsconfig.json && tsc --noEmit -p packages/server/tsconfig.json && tsc --noEmit -p packages/web/tsconfig.json"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

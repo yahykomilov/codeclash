@@ -1,0 +1,86 @@
+{
+  "app": {
+    "title": "CodeClash",
+    "tagline": "Онлайн-баттлы по IT — HTML, CSS, JS и React"
+  },
+  "home": {
+    "joinTitle": "Войти в игру",
+    "joinDesc": "Введи PIN и играй с телефона",
+    "hostTitle": "Создать лобби",
+    "hostDesc": "Проведи квиз на большом экране",
+    "player": "Я участник",
+    "host": "Создать игру"
+  },
+  "auth": {
+    "login": "Войти",
+    "register": "Регистрация",
+    "email": "Почта",
+    "password": "Пароль",
+    "google": "Продолжить с Google",
+    "logout": "Выйти",
+    "haveAccount": "Уже есть аккаунт?",
+    "noAccount": "Ещё нет аккаунта?",
+    "signInToHost": "Войдите, чтобы создать игру",
+    "or": "или",
+    "notConfigured": "Авторизация ещё не настроена — включён демо-режим."
+  },
+  "join": {
+    "title": "Вступить в баттл",
+    "pin": "PIN игры",
+    "username": "Твой ник",
+    "enter": "Войти",
+    "waiting": "Ждём, пока ведущий начнёт…"
+  },
+  "host": {
+    "pickQuiz": "Выбери квиз",
+    "create": "Создать лобби",
+    "pinLabel": "PIN игры",
+    "players": "Игроки",
+    "noPlayers": "Ждём подключения игроков…",
+    "start": "Начать игру",
+    "next": "Дальше",
+    "skip": "Пропустить",
+    "showScreen": "Покажи этот экран игрокам"
+  },
+  "game": {
+    "question": "Вопрос",
+    "of": "из",
+    "answered": "ответили",
+    "correct": "Верно!",
+    "wrong": "Неверно",
+    "points": "очков",
+    "rank": "Место",
+    "streak": "серия",
+    "leaderboard": "Таблица лидеров",
+    "podium": "Пьедестал",
+    "finished": "Игра окончена!",
+    "playAgain": "Играть снова",
+    "waitOthers": "Ответ принят — ждём остальных…",
+    "pickAnswer": "Выбери ответ"
+  },
+  "categories": {
+    "html": "HTML",
+    "css": "CSS",
+    "js": "JavaScript",
+    "react": "React",
+    "mixed": "Полный микс"
+  },
+  "common": {
+    "loading": "Загрузка…",
+    "back": "Назад",
+    "home": "Главная"
+  },
+  "errors": {
+    "gameNotFound": "Игра не найдена — проверь PIN",
+    "gameStarted": "Игра уже началась",
+    "invalidPin": "PIN должен быть из 6 цифр",
+    "usernameShort": "Слишком короткий ник",
+    "usernameLong": "Слишком длинный ник",
+    "hostLeft": "Ведущий вышел — игра завершена",
+    "noQuestions": "В этом квизе нет вопросов",
+    "invalidInput": "Неверные данные",
+    "invalidEmail": "Неверная почта",
+    "passwordShort": "Пароль минимум 6 символов",
+    "authNotConfigured": "Авторизация не настроена"
+  }
+}

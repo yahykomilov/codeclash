@@ -1,0 +1,11 @@
+import { createClient, type SupabaseClient } from "@supabase/supabase-js"
+
+const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
+const anon = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+
+/** True once XOB fills the Supabase env vars. Until then, demo mode is on. */
+export const supabaseEnabled = Boolean(url && anon)
+
+export const supabase: SupabaseClient | null = supabaseEnabled
+  ? createClient(url as string, anon as string)
+  : null
