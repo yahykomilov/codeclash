@@ -8,9 +8,19 @@ export const CATEGORIES: Category[] = ["html", "css", "js", "react"]
 export type Difficulty = "easy" | "medium" | "hard"
 export type QuestionType = "single" | "multi"
 
+/**
+ * Scoring mode (counter to Kahoot's #1 complaint — speed punishing thoughtful players):
+ * - classic:  50% for correct + up to 50% for speed (Kahoot-like)
+ * - accuracy: full points for ANY correct answer, speed ignored
+ * - hybrid:   80% for correct + small 20% speed tiebreaker
+ */
+export type ScoringMode = "classic" | "accuracy" | "hybrid"
+export const SCORING_MODES: ScoringMode[] = ["accuracy", "hybrid", "classic"]
+
 export interface QuestionTranslation {
   question: string
   answers: string[]
+  explanation?: string
 }
 
 /**
@@ -62,6 +72,8 @@ export interface RevealPayload {
   correct: number[]
   /** votes[i] = number of players who picked answer i */
   votes: number[]
+  /** Why the correct answer is right (counter to "Kahoot doesn't teach"). */
+  explanation?: string
 }
 
 export interface LeaderboardEntry {
@@ -83,6 +95,7 @@ export interface PlayerResult {
 export interface HostCreatePayload {
   quizId: string
   locale: Locale
+  scoringMode?: ScoringMode
 }
 export interface PlayerJoinPayload {
   pin: string

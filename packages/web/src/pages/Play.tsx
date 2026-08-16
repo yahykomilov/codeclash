@@ -1,8 +1,15 @@
 import { useEffect, useRef, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
-import { C2S, S2C, type PlayerResult, type PublicQuestion } from "@codeclash/common"
+import {
+  C2S,
+  S2C,
+  type PlayerResult,
+  type PublicQuestion,
+  type RevealPayload,
+} from "@codeclash/common"
 import { getSocket } from "../lib/socket"
+import { speak, speechSupported } from "../lib/speech"
 import { Button } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
@@ -11,7 +18,7 @@ const SHAPES = ["▲", "◆", "●", "■"]
 type Phase = "waiting" | "question" | "result" | "finished" | "kicked" | "error"
 
 export default function Play() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const nav = location.state as { pin?: string; username?: string } | null
@@ -23,7 +30,9 @@ export default function Play() {
   const [result, setResult] = useState<PlayerResult | null>(null)
   const [secondsLeft, setSecondsLeft] = useState(0)
   const [message, setMessage] = useState("")
+  const [explanation, setExplanation] = useState<string | undefined>()
   const lastRank = useRef(0)
+  const lastPoints = useRef(0)
 
   useEffect(() => {
     if (!nav?.pin) {
@@ -36,11 +45,14 @@ export default function Play() {
       setSelected([])
       setLocked(false)
       setResult(null)
+      setExplanation(undefined)
       setSecondsLeft(q.time)
       setPhase("question")
     }
+    const onReveal = (r: RevealPayload) => setExplanation(r.explanation)
     const onResult = (r: PlayerResult) => {
       lastRank.current = r.rank
+      lastPoints.current = r.points
       setResult(r)
       setPhase("result")
     }
@@ -51,12 +63,14 @@ export default function Play() {
       setPhase("error")
     }
     socket.on(S2C.QUESTION, onQuestion)
+    socket.on(S2C.REVEAL, onReveal)
     socket.on(S2C.PLAYER_RESULT, onResult)
     socket.on(S2C.FINISHED, onFinished)
     socket.on(S2C.KICKED, onKicked)
     socket.on(S2C.ERROR, onError)
     return () => {
       socket.off(S2C.QUESTION, onQuestion)
+      socket.off(S2C.REVEAL, onReveal)
       socket.off(S2C.PLAYER_RESULT, onResult)
       socket.off(S2C.FINISHED, onFinished)
       socket.off(S2C.KICKED, onKicked)
@@ -115,7 +129,21 @@ export default function Play() {
           </Centered>
         ) : (
           <>
-            <p className="mb-4 text-center text-sm opacity-70">{t("game.pickAnswer")}</p>
+            <div className="mb-4 flex items-center justify-center gap-3">
+              <p className="text-center text-sm opacity-70">
+                {question.type === "multi" ? t("game.pickMultiple") : t("game.pickAnswer")}
+              </p>
+              {speechSupported && (
+                <button
+                  onClick={() =>
+                    speak(`${question.question}. ${question.answers.join(", ")}`, i18n.language)
+                  }
+                  className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-xs font-bold hover:bg-white/20"
+                >
+                  🔊 {t("game.readAloud")}
+                </button>
+              )}
+            </div>
             <div className="grid flex-1 grid-cols-2 gap-3">
               {question.answers.map((ans, i) => (
                 <button
@@ -132,7 +160,7 @@ export default function Play() {
             </div>
             {question.type === "multi" && (
               <Button onClick={submitMulti} disabled={selected.length === 0} className="mt-3">
-                {t("join.enter")}
+                {t("game.submit")}
               </Button>
             )}
           </>
@@ -159,6 +187,11 @@ export default function Play() {
           {result.streak > 1 && (
             <p className="mt-1 text-sm text-brand-light">🔥 {result.streak} {t("game.streak")}</p>
           )}
+          {explanation && (
+            <p className="mx-auto mt-4 max-w-xs rounded-xl bg-white/5 px-4 py-2 text-sm opacity-90">
+              <b className="text-brand-light">{t("game.why")}:</b> {explanation}
+            </p>
+          )}
         </div>
       </Centered>
     )
@@ -171,6 +204,9 @@ export default function Play() {
           <h1 className="text-4xl font-black">{t("game.finished")}</h1>
           <p className="mt-3 text-xl">
             {t("game.rank")}: <b>#{lastRank.current}</b>
+          </p>
+          <p className="mt-1 opacity-80">
+            {lastPoints.current} {t("game.points")}
           </p>
           <Link to="/" className="mt-6 inline-block font-bold text-brand-light">
             {t("common.home")}

@@ -1,22 +1,34 @@
+import type { ScoringMode } from "./types"
+
 export const MAX_POINTS = 1000
 export const STREAK_STEP = 100
 export const MAX_STREAK_BONUS = 5
 
 /**
- * Time-weighted score. A correct answer is worth half of MAX_POINTS just for
- * being right, plus up to half more the faster it arrives, plus a streak bonus.
+ * Score a correct answer under the chosen mode. Wrong answers score 0.
+ * `accuracy` mode is the headline counter to Kahoot's fastest-finger unfairness:
+ * being right is worth the same for everyone, regardless of speed.
  */
 export function computeScore(opts: {
   correct: boolean
   elapsedMs: number
   windowMs: number
   streak: number
+  mode: ScoringMode
 }): number {
   if (!opts.correct) return 0
+  const streakBonus = Math.min(opts.streak, MAX_STREAK_BONUS) * STREAK_STEP
+
+  if (opts.mode === "accuracy") {
+    return MAX_POINTS + streakBonus
+  }
+
   const ratio = Math.max(0, Math.min(1, 1 - opts.elapsedMs / opts.windowMs))
-  const base = Math.round(MAX_POINTS * (0.5 + 0.5 * ratio))
-  const bonus = Math.min(opts.streak, MAX_STREAK_BONUS) * STREAK_STEP
-  return base + bonus
+  if (opts.mode === "hybrid") {
+    return Math.round(MAX_POINTS * (0.8 + 0.2 * ratio)) + streakBonus
+  }
+  // classic
+  return Math.round(MAX_POINTS * (0.5 + 0.5 * ratio)) + streakBonus
 }
 
 /** Exact-set match: for multi-answer, the whole set must match. */

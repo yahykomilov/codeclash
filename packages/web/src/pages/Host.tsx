@@ -5,11 +5,13 @@ import {
   C2S,
   QUIZZES,
   S2C,
+  SCORING_MODES,
   type LeaderboardEntry,
   type Locale,
   type Player,
   type PublicQuestion,
   type RevealPayload,
+  type ScoringMode,
 } from "@codeclash/common"
 import { getSocket } from "../lib/socket"
 import { useAuth } from "../lib/auth"
@@ -17,6 +19,8 @@ import { Button, Card } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
 const SHAPES = ["▲", "◆", "●", "■"]
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
 type Phase = "pick" | "lobby" | "question" | "reveal" | "finished"
 
@@ -33,6 +37,7 @@ export default function Host() {
   const [reveal, setReveal] = useState<RevealPayload | null>(null)
   const [board, setBoard] = useState<LeaderboardEntry[]>([])
   const [podium, setPodium] = useState<LeaderboardEntry[]>([])
+  const [scoringMode, setScoringMode] = useState<ScoringMode>("hybrid")
 
   useEffect(() => {
     const socket = getSocket()
@@ -108,11 +113,38 @@ export default function Host() {
             {t("auth.notConfigured")}
           </p>
         )}
+        <div>
+          <p className="mb-2 text-center text-sm font-bold uppercase tracking-widest opacity-60">
+            {t("host.scoring")}
+          </p>
+          <div className="mx-auto flex max-w-xl flex-wrap justify-center gap-2">
+            {SCORING_MODES.map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setScoringMode(mode)}
+                title={t(`host.scoring${cap(mode)}Hint`)}
+                className={`rounded-full px-4 py-2 text-sm font-bold transition ${
+                  scoringMode === mode ? "bg-brand text-white" : "bg-white/10 opacity-70 hover:opacity-100"
+                }`}
+              >
+                {t(`host.scoring${cap(mode)}`)}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-center text-xs opacity-60">{t(`host.scoring${cap(scoringMode)}Hint`)}</p>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           {QUIZZES.map((quiz) => (
             <button
               key={quiz.id}
-              onClick={() => emit(C2S.HOST_CREATE, { quizId: quiz.id, locale: i18n.language as Locale })}
+              onClick={() =>
+                emit(C2S.HOST_CREATE, {
+                  quizId: quiz.id,
+                  locale: i18n.language as Locale,
+                  scoringMode,
+                })
+              }
               className="rounded-2xl bg-white/5 p-6 text-left shadow-lg transition hover:-translate-y-1 hover:bg-white/10"
             >
               <div className="text-xl font-extrabold">{t(`categories.${quiz.category}`)}</div>
@@ -230,6 +262,13 @@ export default function Host() {
               )
             })}
           </div>
+
+          {reveal.explanation && (
+            <div className="max-w-2xl rounded-2xl bg-brand/15 px-5 py-3 text-center ring-1 ring-brand-light/30">
+              <span className="font-bold text-brand-light">{t("game.why")}: </span>
+              {reveal.explanation}
+            </div>
+          )}
 
           {board.length > 0 && (
             <div className="w-full max-w-md">

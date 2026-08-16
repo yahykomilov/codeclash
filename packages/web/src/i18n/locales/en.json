@@ -40,7 +40,14 @@
     "start": "Start game",
     "next": "Next",
     "skip": "Skip",
-    "showScreen": "Show this screen to players"
+    "showScreen": "Show this screen to players",
+    "scoring": "Scoring",
+    "scoringAccuracy": "Fair",
+    "scoringHybrid": "Balanced",
+    "scoringClassic": "Classic",
+    "scoringAccuracyHint": "Same points for any correct answer — speed ignored",
+    "scoringHybridHint": "Mostly correctness, small speed bonus",
+    "scoringClassicHint": "Speed matters (Kahoot-style)"
   },
   "game": {
     "question": "Question",
@@ -56,7 +63,12 @@
     "finished": "Game over!",
     "playAgain": "Play again",
     "waitOthers": "Answer locked in — waiting for others…",
-    "pickAnswer": "Pick your answer"
+    "pickAnswer": "Pick your answer",
+    "why": "Why",
+    "readAloud": "Read aloud",
+    "yourPoints": "Your score",
+    "submit": "Submit",
+    "pickMultiple": "Pick all correct answers"
   },
   "categories": {
     "html": "HTML",
@@ -76,11 +88,15 @@
     "invalidPin": "PIN must be 6 digits",
     "usernameShort": "Nickname is too short",
     "usernameLong": "Nickname is too long",
+    "usernameInvalid": "Use letters and numbers only",
     "hostLeft": "The host left — game ended",
     "noQuestions": "This quiz has no questions",
     "invalidInput": "Invalid input",
     "invalidEmail": "Invalid email",
     "passwordShort": "Password must be at least 6 characters",
-    "authNotConfigured": "Auth is not configured"
+    "authNotConfigured": "Auth is not configured",
+    "rateLimited": "Too many attempts — slow down",
+    "serverBusy": "Server is busy, try again",
+    "gameFull": "This game is full"
   }
 }

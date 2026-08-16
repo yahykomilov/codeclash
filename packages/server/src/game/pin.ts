@@ -1,8 +1,10 @@
-/** Generate a unique 6-digit room PIN. */
+import { randomInt } from "node:crypto"
+
+/** Generate a unique, cryptographically-random 6-digit room PIN. */
 export function generatePin(exists: (pin: string) => boolean): string {
   let pin: string
   do {
-    pin = String(Math.floor(100000 + Math.random() * 900000))
+    pin = String(randomInt(100000, 1000000))
   } while (exists(pin))
   return pin
 }
