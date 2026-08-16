@@ -1,20 +1,94 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700;800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --bg: #06050e;
+  --neon-violet: #8b5cff;
+  --neon-cyan: #22d3ee;
+  --neon-magenta: #ff3d9a;
   color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "Montserrat", system-ui, sans-serif;
-  background: radial-gradient(circle at 20% 20%, #2e1065 0%, #0f0a1e 55%, #05030d 100%);
-  color: #f5f3ff;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+  color: #ece9ff;
+  background: var(--bg);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Living aurora background — drifting neon light pools. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  background:
+    radial-gradient(38% 38% at 18% 22%, rgba(139, 92, 255, 0.30), transparent 70%),
+    radial-gradient(32% 32% at 82% 14%, rgba(34, 211, 238, 0.20), transparent 70%),
+    radial-gradient(42% 42% at 72% 86%, rgba(255, 61, 154, 0.18), transparent 70%);
+  filter: blur(24px);
+  animation: drift 24s ease-in-out infinite alternate;
+  z-index: -2;
+}
+
+/* Terminal grid, faded toward the edges. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139, 92, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 255, 0.055) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(circle at 50% 38%, black, transparent 82%);
+  mask-image: radial-gradient(circle at 50% 38%, black, transparent 82%);
+  z-index: -1;
+}
+
+@keyframes drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(-5%, 4%) scale(1.12);
+  }
 }
 
 #root {
+  position: relative;
   min-height: 100vh;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Chakra Petch", sans-serif;
+  }
+  .font-code {
+    font-family: "JetBrains Mono", monospace;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.045);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .text-gradient {
+    background: linear-gradient(115deg, #c3b2ff 0%, #22d3ee 55%, #ff3d9a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glow-ring {
+    box-shadow:
+      0 0 0 1px rgba(139, 92, 255, 0.35),
+      0 12px 48px -10px rgba(139, 92, 255, 0.55);
+  }
 }

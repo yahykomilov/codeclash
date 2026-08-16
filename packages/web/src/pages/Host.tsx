@@ -21,6 +21,12 @@ import { Button, Card } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
 const SHAPES = ["▲", "◆", "●", "■"]
+const GLOW = [
+  "shadow-[0_14px_50px_-10px_rgba(255,67,101,0.6)]",
+  "shadow-[0_14px_50px_-10px_rgba(47,107,255,0.6)]",
+  "shadow-[0_14px_50px_-10px_rgba(255,176,32,0.6)]",
+  "shadow-[0_14px_50px_-10px_rgba(61,220,132,0.6)]",
+]
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 
@@ -203,7 +209,7 @@ export default function Host() {
           <p className="text-sm uppercase tracking-widest opacity-60">{t("host.showScreen")}</p>
           <p className="text-sm opacity-70">{t("host.pinLabel")}</p>
           <div className="mt-2 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
-            <div className="rounded-2xl bg-white/10 px-10 py-4 text-6xl font-black tracking-[0.3em]">
+            <div className="rounded-2xl border border-neon-cyan/30 bg-white/5 px-10 py-4 font-code text-6xl font-extrabold tracking-[0.2em] text-neon-cyan shadow-[0_0_50px_-10px_rgba(34,211,238,0.6)]">
               {pin}
             </div>
             <div className="rounded-xl bg-white p-2 shadow-lg">
@@ -264,12 +270,15 @@ export default function Host() {
           </div>
         )}
         <div className="flex flex-1 flex-col items-center justify-center gap-8">
-          <h1 className="max-w-3xl text-center text-3xl font-black sm:text-4xl">{question.question}</h1>
+          <h1 className="max-w-3xl text-center font-display text-3xl font-bold leading-tight sm:text-5xl">
+            {question.question}
+          </h1>
           <div className="grid w-full max-w-3xl grid-cols-2 gap-4">
             {question.answers.map((ans, i) => (
               <div
                 key={i}
-                className={`flex items-center gap-3 rounded-2xl p-5 text-xl font-bold text-white shadow-lg ${TILES[i % 4]}`}
+                style={{ animationDelay: `${i * 70}ms` }}
+                className={`flex animate-pop-in items-center gap-3 rounded-2xl p-5 font-display text-xl font-bold text-white ${TILES[i % 4]} ${GLOW[i % 4]}`}
               >
                 <span className="text-3xl">{SHAPES[i % 4]}</span>
                 <span>{ans}</span>
@@ -298,7 +307,9 @@ export default function Host() {
     return (
       <div className="flex flex-1 flex-col p-6">
         <div className="flex flex-1 flex-col items-center justify-center gap-8">
-          <h1 className="max-w-3xl text-center text-2xl font-black sm:text-3xl">{question.question}</h1>
+          <h1 className="max-w-3xl text-center font-display text-2xl font-bold sm:text-4xl">
+            {question.question}
+          </h1>
           <div className="grid w-full max-w-3xl grid-cols-2 gap-4">
             {question.answers.map((ans, i) => {
               const isCorrect = reveal.correct.includes(i)
@@ -368,7 +379,9 @@ export default function Host() {
     const heights = ["h-32", "h-44", "h-24"]
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-10 px-6 py-10">
-        <h1 className="text-4xl font-black">🏆 {t("game.podium")}</h1>
+        <h1 className="font-display text-5xl font-bold">
+          🏆 <span className="text-gradient">{t("game.podium")}</span>
+        </h1>
         <div className="flex items-end gap-4">
           {order.map((idx, i) => {
             const e = podium[idx]

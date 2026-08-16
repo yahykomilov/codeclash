@@ -16,6 +16,12 @@ import { Button } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
 const SHAPES = ["▲", "◆", "●", "■"]
+const GLOW = [
+  "shadow-[0_12px_44px_-8px_rgba(255,67,101,0.65)]",
+  "shadow-[0_12px_44px_-8px_rgba(47,107,255,0.65)]",
+  "shadow-[0_12px_44px_-8px_rgba(255,176,32,0.65)]",
+  "shadow-[0_12px_44px_-8px_rgba(61,220,132,0.65)]",
+]
 
 type Phase = "waiting" | "question" | "result" | "finished" | "kicked" | "error"
 
@@ -186,11 +192,13 @@ export default function Play() {
                   key={i}
                   onClick={() => pick(i)}
                   style={{ animationDelay: `${i * 60}ms` }}
-                  className={`flex min-h-[20vh] animate-pop-in flex-col items-center justify-center gap-2 rounded-2xl p-4 text-center text-xl font-bold text-white shadow-lg transition active:scale-95 ${TILES[i % 4]} ${
-                    selected.includes(i) ? "scale-[1.03] ring-4 ring-white" : "opacity-95"
+                  className={`flex min-h-[20vh] animate-pop-in flex-col items-center justify-center gap-2 rounded-2xl p-4 text-center font-display text-xl font-bold text-white transition-all duration-150 active:scale-95 ${TILES[i % 4]} ${GLOW[i % 4]} ${
+                    selected.includes(i)
+                      ? "scale-[1.03] ring-4 ring-white"
+                      : "opacity-95 hover:scale-[1.02]"
                   }`}
                 >
-                  <span className="text-3xl">{SHAPES[i % 4]}</span>
+                  <span className="text-4xl drop-shadow">{SHAPES[i % 4]}</span>
                   <span>{ans}</span>
                 </button>
               ))}

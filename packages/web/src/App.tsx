@@ -15,9 +15,10 @@ export default function App() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between px-5 py-4">
-        <Link to="/" className="text-2xl font-black tracking-tight">
-          <span className="text-brand-light">Code</span>Clash
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-white/5 bg-black/20 px-5 py-4 backdrop-blur-md">
+        <Link to="/" className="font-display text-2xl font-bold tracking-tight">
+          <span className="text-gradient">Code</span>
+          <span className="text-white">Clash</span>
         </Link>
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
