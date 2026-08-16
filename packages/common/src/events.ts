@@ -4,6 +4,7 @@
  */
 export const C2S = {
   HOST_CREATE: "host:create",
+  HOST_GENERATE_QUIZ: "host:generateQuiz",
   HOST_START: "host:start",
   HOST_NEXT: "host:next",
   HOST_SKIP: "host:skip",
