@@ -16,7 +16,7 @@ export default function GoogleButton({ onDone }: { onDone?: () => void }) {
     if (error) {
       // Demo mode: no real provider — let the host continue anyway.
       if (!enabled) onDone?.()
-      else setError(error)
+      else setError(t(error))
     }
   }
 

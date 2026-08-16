@@ -20,7 +20,7 @@ export default function Login() {
     setError("")
     const { error } = await signIn(email, password)
     setBusy(false)
-    if (error) setError(error)
+    if (error && enabled) setError(t(error))
     else navigate("/host")
   }
 

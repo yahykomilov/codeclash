@@ -26,7 +26,7 @@ export default function Register() {
     setBusy(true)
     const { error } = await signUp(email, password)
     setBusy(false)
-    if (error) setError(error)
+    if (error && enabled) setError(t(error))
     else navigate("/host")
   }
 
