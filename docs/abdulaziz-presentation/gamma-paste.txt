@@ -1,0 +1,55 @@
+# CodeClash — darsni jonli o'yinga aylantiradigan IT-viktorina
+DevX Command · Hakaton 2026
+
+---
+
+# Muammo
+Darsdagi oddiy test — zerikarli va sekin.
+O'quvchilar baribir telefonga qaraydi. Bilimni tekshirish qiziqarli emas.
+
+---
+
+# Yechim
+CodeClash — Kahoot uslubidagi jonli ko'p o'yinchili viktorina.
+Boshlovchi katta ekranda savol chiqaradi, butun sinf telefondan javob beradi.
+
+---
+
+# Bor edi / Bo'ldi
+Oldin: qog'oz test → zerikish → o'qituvchi qo'lda tekshiradi.
+Endi: telefonda jonli musobaqa → 30 soniyada butun sinf → natija darrov ekranda.
+
+---
+
+# Uni harakatda ko'ring
+2 daqiqalik demo: PIN bilan kirish → savol → telefondan javob → ochko → podium.
+
+---
+
+# Qanday ishlaydi
+React interfeys (telefon va katta ekran) ↔ jonli server (Socket.io) barcha o'yinchini bir soniyada birlashtiradi.
+Kirish — email yoki Google orqali. Interfeys 3 tilda: o'zbek, rus, ingliz.
+
+---
+
+# Ochko va kurash mexanikasi
+To'g'ri javob = ball, qancha tez — shuncha ko'p (maksimum 1000).
+Ketma-ket to'g'ri javob (streak) = qo'shimcha bonus. Oxirida — liderlar jadvali va podium.
+
+---
+
+# Jamoa
+Yahyo — frontend / veb
+Otabek — backend
+XOB — integratsiya va avtorizatsiya
+Abdulaziz — video va prezentatsiya
+
+---
+
+# Nega biz yutamiz
+Realtime haqiqatan ishlaydi — ko'plarda uziladi, bizda yo'q.
+Bitta aniq fokus — bitta to'liq mahsulot, yarim ishlaydiganlar emas.
+Tayyor foyda — o'qituvchi bugun sinfda ishlata oladi.
+Ko'p tilli — o'zbek maktablari uchun ham tayyor.
+
+CodeClash · DevX Command · Rahmat!
