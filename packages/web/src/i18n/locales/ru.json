@@ -56,7 +56,8 @@
     "scoringClassic": "Классика",
     "scoringAccuracyHint": "Равные очки за любой правильный ответ — скорость не важна",
     "scoringHybridHint": "В основном за правильность, небольшой бонус за скорость",
-    "scoringClassicHint": "Скорость важна (как в Kahoot)"
+    "scoringClassicHint": "Скорость важна (как в Kahoot)",
+    "questions": "вопросов"
   },
   "game": {
     "question": "Вопрос",

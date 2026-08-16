@@ -18,7 +18,7 @@
   "auth": {
     "login": "Kirish",
     "register": "Ro'yxatdan o'tish",
-    "email": "Pochta",
+    "email": "Email",
     "password": "Parol",
     "google": "Google bilan davom etish",
     "logout": "Chiqish",
@@ -56,7 +56,8 @@
     "scoringClassic": "Klassik",
     "scoringAccuracyHint": "Har qanday to'g'ri javobga teng ochko — tezlik muhim emas",
     "scoringHybridHint": "Asosan to'g'rilik uchun, ozgina tezlik bonusi",
-    "scoringClassicHint": "Tezlik muhim (Kahoot uslubida)"
+    "scoringClassicHint": "Tezlik muhim (Kahoot uslubida)",
+    "questions": "savol"
   },
   "game": {
     "question": "Savol",

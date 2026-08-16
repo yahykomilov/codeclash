@@ -56,7 +56,8 @@
     "scoringClassic": "Classic",
     "scoringAccuracyHint": "Same points for any correct answer — speed ignored",
     "scoringHybridHint": "Mostly correctness, small speed bonus",
-    "scoringClassicHint": "Speed matters (Kahoot-style)"
+    "scoringClassicHint": "Speed matters (Kahoot-style)",
+    "questions": "questions"
   },
   "game": {
     "question": "Question",
