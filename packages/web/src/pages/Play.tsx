@@ -168,11 +168,12 @@ export default function Play() {
                 <button
                   key={i}
                   onClick={() => pick(i)}
-                  className={`flex items-center justify-center gap-2 rounded-2xl p-4 text-lg font-bold text-white shadow-lg transition active:scale-95 ${TILES[i % 4]} ${
-                    selected.includes(i) ? "ring-4 ring-white" : "opacity-95"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                  className={`flex min-h-[20vh] animate-pop-in flex-col items-center justify-center gap-2 rounded-2xl p-4 text-center text-xl font-bold text-white shadow-lg transition active:scale-95 ${TILES[i % 4]} ${
+                    selected.includes(i) ? "scale-[1.03] ring-4 ring-white" : "opacity-95"
                   }`}
                 >
-                  <span className="text-2xl">{SHAPES[i % 4]}</span>
+                  <span className="text-3xl">{SHAPES[i % 4]}</span>
                   <span>{ans}</span>
                 </button>
               ))}
