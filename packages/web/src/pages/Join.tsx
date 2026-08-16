@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { C2S, S2C } from "@codeclash/common"
 import { getSocket } from "../lib/socket"
@@ -8,7 +8,8 @@ import { Button, Card, Input } from "../components/ui"
 export default function Join() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [pin, setPin] = useState("")
+  const [params] = useSearchParams()
+  const [pin, setPin] = useState((params.get("pin") ?? "").replace(/\D/g, "").slice(0, 6))
   const [username, setUsername] = useState("")
   const [error, setError] = useState("")
   const [busy, setBusy] = useState(false)

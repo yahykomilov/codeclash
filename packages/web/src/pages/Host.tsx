@@ -13,6 +13,8 @@ import {
   type RevealPayload,
   type ScoringMode,
 } from "@codeclash/common"
+import { QRCodeSVG } from "qrcode.react"
+import confetti from "canvas-confetti"
 import { getSocket } from "../lib/socket"
 import { useAuth } from "../lib/auth"
 import { Button, Card } from "../components/ui"
@@ -86,6 +88,17 @@ export default function Host() {
     const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000)
     return () => clearInterval(id)
   }, [phase, question])
+
+  useEffect(() => {
+    if (phase !== "finished") return
+    const end = Date.now() + 1600
+    const frame = () => {
+      confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0 }, colors: ["#7c3aed", "#a78bfa", "#e21b3c", "#26890c"] })
+      confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1 }, colors: ["#7c3aed", "#a78bfa", "#1368ce", "#d89e00"] })
+      if (Date.now() < end) requestAnimationFrame(frame)
+    }
+    frame()
+  }, [phase])
 
   const emit = (event: string, payload?: unknown) => getSocket().emit(event, payload)
 
@@ -163,8 +176,13 @@ export default function Host() {
         <div className="text-center">
           <p className="text-sm uppercase tracking-widest opacity-60">{t("host.showScreen")}</p>
           <p className="text-sm opacity-70">{t("host.pinLabel")}</p>
-          <div className="mt-2 rounded-2xl bg-white/10 px-10 py-4 text-6xl font-black tracking-[0.3em]">
-            {pin}
+          <div className="mt-2 flex flex-col items-center gap-4 sm:flex-row sm:items-center">
+            <div className="rounded-2xl bg-white/10 px-10 py-4 text-6xl font-black tracking-[0.3em]">
+              {pin}
+            </div>
+            <div className="rounded-xl bg-white p-2 shadow-lg">
+              <QRCodeSVG value={`${window.location.origin}/join?pin=${pin}`} size={128} />
+            </div>
           </div>
         </div>
 
@@ -205,6 +223,14 @@ export default function Host() {
           </span>
           <span className="rounded-full bg-white/10 px-5 py-2 text-2xl font-black">{secondsLeft}</span>
         </div>
+        {question && (
+          <div className="mb-4 h-3 w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-brand-light transition-all duration-1000 ease-linear"
+              style={{ width: `${(secondsLeft / Math.max(1, question.time)) * 100}%` }}
+            />
+          </div>
+        )}
         <div className="flex flex-1 flex-col items-center justify-center gap-8">
           <h1 className="max-w-3xl text-center text-3xl font-black sm:text-4xl">{question.question}</h1>
           <div className="grid w-full max-w-3xl grid-cols-2 gap-4">

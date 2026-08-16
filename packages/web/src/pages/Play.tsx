@@ -121,6 +121,12 @@ export default function Play() {
           </span>
           <span className="rounded-full bg-white/10 px-3 py-1">{secondsLeft}s</span>
         </div>
+        <div className="mb-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+          <div
+            className="h-full rounded-full bg-brand-light transition-all duration-1000 ease-linear"
+            style={{ width: `${(secondsLeft / Math.max(1, question.time)) * 100}%` }}
+          />
+        </div>
         {locked ? (
           <Centered>
             <h2 className="animate-pulse text-center text-2xl font-bold">
