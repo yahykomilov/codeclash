@@ -8,6 +8,7 @@ import {
   type Player,
   type PublicQuestion,
   type Question,
+  type ScoringMode,
 } from "@codeclash/common"
 
 interface AnswerRecord {
@@ -17,9 +18,15 @@ interface AnswerRecord {
 
 export type GamePhase = "lobby" | "question" | "reveal" | "finished"
 
+const MAX_PLAYERS = 200
+
 /**
  * One live quiz room. Authoritative over timing and scoring; broadcasts to a
  * socket.io room whose name equals the PIN. The host socket is in the room too.
+ *
+ * Answer order is reshuffled per question and correctness is tracked in that
+ * shuffled ("display") space, so screen-shared "click the red one" cheats and
+ * memorised positions from a previous game both break.
  */
 export class Game {
   phase: GamePhase = "lobby"
@@ -29,13 +36,21 @@ export class Game {
   private readonly answers = new Map<string, AnswerRecord>()
   private questionStart = 0
   private timer: NodeJS.Timeout | null = null
+  private displayCorrect: number[] = []
+  private answerCount = 4
+  private explanation?: string
+  private paused = false
+  private remainingMs = 0
 
   constructor(
     private readonly io: Server,
     readonly pin: string,
-    readonly hostId: string,
+    public hostId: string,
     private readonly questions: Question[],
     private readonly locale: Locale,
+    private readonly scoringMode: ScoringMode,
+    private readonly privateRank: boolean,
+    private readonly onEnd: () => void,
   ) {}
 
   get currentQuestion(): Question {
@@ -46,10 +61,20 @@ export class Game {
     return [...this.players.values()]
   }
 
-  addPlayer(id: string, username: string): Player {
-    const player: Player = { id, username, points: 0, streak: 0 }
+  /** Returns the created player, or null if the room is full. */
+  addPlayer(id: string, username: string): Player | null {
+    if (this.players.size >= MAX_PLAYERS) return null
+    const player: Player = { id, username: this.uniqueName(username), points: 0, streak: 0 }
     this.players.set(id, player)
     return player
+  }
+
+  private uniqueName(name: string): string {
+    const taken = new Set(this.playerList().map((p) => p.username.toLowerCase()))
+    if (!taken.has(name.toLowerCase())) return name
+    let n = 2
+    while (taken.has(`${name} (${n})`.toLowerCase())) n++
+    return `${name} (${n})`
   }
 
   removePlayer(id: string): void {
@@ -57,13 +82,17 @@ export class Game {
     this.answers.delete(id)
   }
 
-  /** Kick off the game from the lobby. */
-  start(): void {
-    if (this.phase !== "lobby") return
-    this.next()
+  reassignHost(id: string): void {
+    this.hostId = id
   }
 
+  start(): void {
+    if (this.phase === "lobby") this.next()
+  }
+
+  /** Advance to the next question. Guarded: never interrupts a live question. */
   next(): void {
+    if (this.phase === "question") return
     if (this.currentIndex + 1 >= this.questions.length) {
       this.finish()
       return
@@ -72,46 +101,103 @@ export class Game {
     this.sendQuestion()
   }
 
+  private clearTimer(): void {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  }
+
   private sendQuestion(): void {
+    this.clearTimer()
     this.phase = "question"
+    this.paused = false
     this.answers.clear()
     this.questionStart = Date.now()
     const q = this.currentQuestion
     const t = q.translations[this.locale] ?? q.translations.en
+    const n = t.answers.length
+
+    // Shuffle display order; map correctness into the shuffled space.
+    const perm = this.shuffledIndices(n)
+    const displayAnswers = perm.map((oi) => t.answers[oi])
+    this.displayCorrect = perm
+      .map((oi, d) => (q.correct.includes(oi) ? d : -1))
+      .filter((d) => d >= 0)
+    this.answerCount = n
+    this.explanation = t.explanation
+
     const pub: PublicQuestion = {
       index: this.currentIndex,
       total: this.questions.length,
       category: q.category,
       type: q.type,
       question: t.question,
-      answers: t.answers,
+      answers: displayAnswers,
       time: q.time,
     }
     this.io.to(this.pin).emit(S2C.QUESTION, pub)
     this.timer = setTimeout(() => this.closeQuestion(), q.time * 1000)
   }
 
-  submitAnswer(id: string, answers: number[]): void {
+  private shuffledIndices(n: number): number[] {
+    const a = [...Array(n).keys()]
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[a[i], a[j]] = [a[j], a[i]]
+    }
+    return a
+  }
+
+  submitAnswer(id: string, raw: number[]): void {
     if (this.phase !== "question") return
     if (!this.players.has(id)) return
     if (this.answers.has(id)) return
+    // Sanitise: unique, integer, in-range indices only.
+    const answers = [...new Set(raw)].filter(
+      (a) => Number.isInteger(a) && a >= 0 && a < this.answerCount,
+    )
+    if (answers.length === 0) return
     this.answers.set(id, { answers, elapsedMs: Date.now() - this.questionStart })
     this.io.to(this.pin).emit(S2C.ANSWER_COUNT, this.answers.size)
+    this.maybeAutoClose()
+  }
+
+  /** Close early once everyone still present has answered. */
+  maybeAutoClose(): void {
+    if (this.phase !== "question" || this.paused) return
     if (this.players.size > 0 && this.answers.size >= this.players.size) {
       this.closeQuestion()
     }
   }
 
-  /** End the current question: score everyone, reveal, broadcast leaderboard. */
+  /** Host pauses a live question — freezes the timer for all (Kahoot can't do this). */
+  pause(): void {
+    if (this.phase !== "question" || this.paused) return
+    this.clearTimer()
+    this.remainingMs = Math.max(
+      0,
+      this.currentQuestion.time * 1000 - (Date.now() - this.questionStart),
+    )
+    this.paused = true
+    this.io.to(this.pin).emit(S2C.PAUSED)
+  }
+
+  resume(): void {
+    if (this.phase !== "question" || !this.paused) return
+    this.paused = false
+    this.questionStart = Date.now() - (this.currentQuestion.time * 1000 - this.remainingMs)
+    this.timer = setTimeout(() => this.closeQuestion(), this.remainingMs)
+    this.io.to(this.pin).emit(S2C.RESUMED, { remainingSec: Math.ceil(this.remainingMs / 1000) })
+  }
+
   closeQuestion(): void {
     if (this.phase !== "question") return
-    if (this.timer) {
-      clearTimeout(this.timer)
-      this.timer = null
-    }
+    this.clearTimer()
+    this.paused = false
     this.phase = "reveal"
     const q = this.currentQuestion
-    const votes = new Array<number>(q.translations[this.locale]?.answers.length ?? 4).fill(0)
+    const votes = new Array<number>(this.answerCount).fill(0)
 
     for (const rec of this.answers.values()) {
       for (const a of rec.answers) {
@@ -119,15 +205,28 @@ export class Game {
       }
     }
 
+    // Comeback boost: the trailing half (behind the leader) earn +30% when correct.
+    const maxPoints = Math.max(0, ...this.playerList().map((p) => p.points))
+    const ascending = this.playerList().sort((a, b) => a.points - b.points)
+    const half = Math.floor(ascending.length / 2)
+    const laggards = new Set(
+      ascending.slice(0, half).filter((p) => p.points < maxPoints).map((p) => p.id),
+    )
+    const comebackFor = new Map<string, boolean>()
+
     for (const [id, player] of this.players) {
       const rec = this.answers.get(id)
-      const correct = rec ? isAnswerCorrect(rec.answers, q.correct) : false
-      const gained = computeScore({
+      const correct = rec ? isAnswerCorrect(rec.answers, this.displayCorrect) : false
+      let gained = computeScore({
         correct,
         elapsedMs: rec?.elapsedMs ?? q.time * 1000,
         windowMs: q.time * 1000,
         streak: player.streak,
+        mode: this.scoringMode,
       })
+      const boosted = correct && gained > 0 && laggards.has(id)
+      if (boosted) gained = Math.round(gained * 1.3)
+      comebackFor.set(id, boosted)
       player.streak = correct ? player.streak + 1 : 0
       player.points += gained
       player.lastGain = gained
@@ -135,8 +234,14 @@ export class Game {
     }
 
     const board = this.leaderboard()
-    this.io.to(this.pin).emit(S2C.REVEAL, { correct: q.correct, votes })
-    this.io.to(this.pin).emit(S2C.LEADERBOARD, board)
+    this.io.to(this.pin).emit(S2C.REVEAL, {
+      correct: this.displayCorrect,
+      votes,
+      explanation: this.explanation,
+    })
+    // Chill mode: hide the public leaderboard from players (host still sees it).
+    if (this.privateRank) this.io.to(this.hostId).emit(S2C.LEADERBOARD, board)
+    else this.io.to(this.pin).emit(S2C.LEADERBOARD, board)
 
     for (const [id, player] of this.players) {
       const rank = board.find((b) => b.id === id)?.rank ?? this.players.size
@@ -146,17 +251,16 @@ export class Game {
         points: player.points,
         rank,
         streak: player.streak,
+        comeback: comebackFor.get(id) ?? false,
       })
     }
   }
 
   private finish(): void {
     this.phase = "finished"
-    if (this.timer) {
-      clearTimeout(this.timer)
-      this.timer = null
-    }
+    this.clearTimer()
     this.io.to(this.pin).emit(S2C.FINISHED, { podium: this.leaderboard().slice(0, 3) })
+    this.onEnd()
   }
 
   leaderboard(): LeaderboardEntry[] {
@@ -166,6 +270,6 @@ export class Game {
   }
 
   dispose(): void {
-    if (this.timer) clearTimeout(this.timer)
+    this.clearTimer()
   }
 }

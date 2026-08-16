@@ -1,0 +1,15 @@
+# Deploy the CodeClash socket server on Render.
+# Web (packages/web) deploys separately on Vercel (root = packages/web).
+services:
+  - type: web
+    name: codeclash-server
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run start -w @codeclash/server
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 3001
+      - key: CLIENT_ORIGIN
+        sync: false # set to the deployed web URL (e.g. https://codeclash.vercel.app)

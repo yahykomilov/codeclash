@@ -9,7 +9,11 @@
     "hostTitle": "Создать лобби",
     "hostDesc": "Проведи квиз на большом экране",
     "player": "Я участник",
-    "host": "Создать игру"
+    "host": "Создать игру",
+    "badge_fairScoring": "Честный скоринг",
+    "badge_explains": "Объясняет ответы",
+    "badge_noLimit": "Без лимита игроков",
+    "badge_trilingual": "RU · UZ · EN"
   },
   "auth": {
     "login": "Войти",
@@ -40,7 +44,19 @@
     "start": "Начать игру",
     "next": "Дальше",
     "skip": "Пропустить",
-    "showScreen": "Покажи этот экран игрокам"
+    "showScreen": "Покажи этот экран игрокам",
+    "freePerks": "∞ игроков • все режимы бесплатно",
+    "pause": "Пауза",
+    "resume": "Продолжить",
+    "privateRank": "Приватный ранг",
+    "privateRankHint": "Игроки видят только свой ранг — меньше стресса",
+    "scoring": "Начисление очков",
+    "scoringAccuracy": "Честный",
+    "scoringHybrid": "Сбалансированный",
+    "scoringClassic": "Классика",
+    "scoringAccuracyHint": "Равные очки за любой правильный ответ — скорость не важна",
+    "scoringHybridHint": "В основном за правильность, небольшой бонус за скорость",
+    "scoringClassicHint": "Скорость важна (как в Kahoot)"
   },
   "game": {
     "question": "Вопрос",
@@ -56,7 +72,14 @@
     "finished": "Игра окончена!",
     "playAgain": "Играть снова",
     "waitOthers": "Ответ принят — ждём остальных…",
-    "pickAnswer": "Выбери ответ"
+    "pickAnswer": "Выбери ответ",
+    "why": "Почему",
+    "readAloud": "Озвучить",
+    "yourPoints": "Твои очки",
+    "submit": "Подтвердить",
+    "pickMultiple": "Выбери все верные ответы",
+    "paused": "Пауза",
+    "comeback": "Камбэк-бонус!"
   },
   "categories": {
     "html": "HTML",
@@ -76,11 +99,15 @@
     "invalidPin": "PIN должен быть из 6 цифр",
     "usernameShort": "Слишком короткий ник",
     "usernameLong": "Слишком длинный ник",
+    "usernameInvalid": "Только буквы и цифры",
     "hostLeft": "Ведущий вышел — игра завершена",
     "noQuestions": "В этом квизе нет вопросов",
     "invalidInput": "Неверные данные",
     "invalidEmail": "Неверная почта",
     "passwordShort": "Пароль минимум 6 символов",
-    "authNotConfigured": "Авторизация не настроена"
+    "authNotConfigured": "Авторизация не настроена",
+    "rateLimited": "Слишком много попыток — помедленнее",
+    "serverBusy": "Сервер занят, попробуй ещё раз",
+    "gameFull": "Игра заполнена"
   }
 }
