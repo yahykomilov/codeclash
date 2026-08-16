@@ -209,6 +209,7 @@ export default function Host() {
         <Button onClick={() => emit(C2S.HOST_START)} disabled={players.length === 0} className="px-10 text-lg">
           {t("host.start")}
         </Button>
+        <p className="text-xs opacity-50">{t("host.freePerks")}</p>
       </div>
     )
   }

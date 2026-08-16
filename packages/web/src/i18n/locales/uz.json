@@ -9,7 +9,11 @@
     "hostTitle": "Lobbi yaratish",
     "hostDesc": "Katta ekranda viktorina o'tkazing",
     "player": "Men ishtirokchiman",
-    "host": "O'yin yaratish"
+    "host": "O'yin yaratish",
+    "badge_fairScoring": "Adolatli hisob",
+    "badge_explains": "Javoblarni tushuntiradi",
+    "badge_noLimit": "Cheksiz o'yinchi",
+    "badge_trilingual": "RU · UZ · EN"
   },
   "auth": {
     "login": "Kirish",
@@ -41,6 +45,7 @@
     "next": "Keyingi",
     "skip": "O'tkazib yuborish",
     "showScreen": "Bu ekranni o'yinchilarga ko'rsating",
+    "freePerks": "∞ o'yinchi • barcha rejimlar bepul",
     "scoring": "Ochko hisoblash",
     "scoringAccuracy": "Adolatli",
     "scoringHybrid": "Muvozanatli",

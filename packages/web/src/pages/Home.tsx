@@ -10,6 +10,16 @@ export default function Home() {
           <span className="text-brand-light">Code</span>Clash
         </h1>
         <p className="mx-auto mt-4 max-w-md text-lg opacity-80">{t("app.tagline")}</p>
+        <div className="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-2">
+          {["fairScoring", "explains", "noLimit", "trilingual"].map((k) => (
+            <span
+              key={k}
+              className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-brand-light ring-1 ring-brand-light/20"
+            >
+              {t(`home.badge_${k}`)}
+            </span>
+          ))}
+        </div>
       </div>
 
       <div className="grid w-full max-w-3xl gap-6 sm:grid-cols-2">

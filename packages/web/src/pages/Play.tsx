@@ -4,12 +4,14 @@ import { useTranslation } from "react-i18next"
 import {
   C2S,
   S2C,
+  type LeaderboardEntry,
   type PlayerResult,
   type PublicQuestion,
   type RevealPayload,
 } from "@codeclash/common"
 import { getSocket } from "../lib/socket"
 import { speak, speechSupported } from "../lib/speech"
+import { sound } from "../lib/sound"
 import { Button } from "../components/ui"
 
 const TILES = ["bg-answer-red", "bg-answer-blue", "bg-answer-yellow", "bg-answer-green"]
@@ -31,6 +33,7 @@ export default function Play() {
   const [secondsLeft, setSecondsLeft] = useState(0)
   const [message, setMessage] = useState("")
   const [explanation, setExplanation] = useState<string | undefined>()
+  const [board, setBoard] = useState<LeaderboardEntry[]>([])
   const lastRank = useRef(0)
   const lastPoints = useRef(0)
 
@@ -50,6 +53,7 @@ export default function Play() {
       setPhase("question")
     }
     const onReveal = (r: RevealPayload) => setExplanation(r.explanation)
+    const onBoard = (b: LeaderboardEntry[]) => setBoard(b)
     const onResult = (r: PlayerResult) => {
       lastRank.current = r.rank
       lastPoints.current = r.points
@@ -64,6 +68,7 @@ export default function Play() {
     }
     socket.on(S2C.QUESTION, onQuestion)
     socket.on(S2C.REVEAL, onReveal)
+    socket.on(S2C.LEADERBOARD, onBoard)
     socket.on(S2C.PLAYER_RESULT, onResult)
     socket.on(S2C.FINISHED, onFinished)
     socket.on(S2C.KICKED, onKicked)
@@ -71,6 +76,7 @@ export default function Play() {
     return () => {
       socket.off(S2C.QUESTION, onQuestion)
       socket.off(S2C.REVEAL, onReveal)
+      socket.off(S2C.LEADERBOARD, onBoard)
       socket.off(S2C.PLAYER_RESULT, onResult)
       socket.off(S2C.FINISHED, onFinished)
       socket.off(S2C.KICKED, onKicked)
@@ -83,6 +89,13 @@ export default function Play() {
     const id = setInterval(() => setSecondsLeft((s) => (s > 0 ? s - 1 : 0)), 1000)
     return () => clearInterval(id)
   }, [phase, question])
+
+  useEffect(() => {
+    if (phase === "result" && result) {
+      if (result.correct) sound.correct()
+      else sound.wrong()
+    }
+  }, [phase, result])
 
   function pick(i: number) {
     if (locked || !question) return
@@ -197,6 +210,21 @@ export default function Play() {
             <p className="mx-auto mt-4 max-w-xs rounded-xl bg-white/5 px-4 py-2 text-sm opacity-90">
               <b className="text-brand-light">{t("game.why")}:</b> {explanation}
             </p>
+          )}
+          {board.length > 0 && (
+            <div className="mx-auto mt-4 max-w-xs space-y-1 text-left">
+              {board.slice(0, 3).map((e) => (
+                <div
+                  key={e.id}
+                  className="flex items-center justify-between rounded-lg bg-white/5 px-3 py-1.5 text-sm"
+                >
+                  <span className="font-bold">
+                    {e.rank}. {e.username}
+                  </span>
+                  <span className="text-brand-light">{e.points}</span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </Centered>

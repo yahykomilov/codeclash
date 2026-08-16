@@ -9,7 +9,11 @@
     "hostTitle": "Создать лобби",
     "hostDesc": "Проведи квиз на большом экране",
     "player": "Я участник",
-    "host": "Создать игру"
+    "host": "Создать игру",
+    "badge_fairScoring": "Честный скоринг",
+    "badge_explains": "Объясняет ответы",
+    "badge_noLimit": "Без лимита игроков",
+    "badge_trilingual": "RU · UZ · EN"
   },
   "auth": {
     "login": "Войти",
@@ -41,6 +45,7 @@
     "next": "Дальше",
     "skip": "Пропустить",
     "showScreen": "Покажи этот экран игрокам",
+    "freePerks": "∞ игроков • все режимы бесплатно",
     "scoring": "Начисление очков",
     "scoringAccuracy": "Честный",
     "scoringHybrid": "Сбалансированный",
