@@ -38,6 +38,15 @@ export function registerHandlers(io: Server): void {
         clearTimeout(t)
         pendingRemoval.delete(socket.id)
       }
+      // A question already shown before the drop isn't "missed" by socket.io's own
+      // event replay, so a reconnecting client's local timer can be stuck at the
+      // pre-drop value. Resync it to the server's authoritative clock.
+      const snapshot = manager.get(socket.data.pin)?.currentQuestionSnapshot()
+      if (snapshot) {
+        socket.emit(S2C.QUESTION, snapshot.question)
+        if (snapshot.paused) socket.emit(S2C.PAUSED)
+        else socket.emit(S2C.RESUMED, { remainingSec: snapshot.remainingSec })
+      }
     }
 
     const hostGame = () =>

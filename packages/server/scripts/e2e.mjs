@@ -116,6 +116,54 @@ async function main() {
   }
   aiHost.close()
 
+  // 5. Mid-question reconnect: a wifi blip preserves the player's answer/score AND
+  //    resyncs the timer to server truth. The countdown is client-local, so without
+  //    an explicit resync a reconnecting client's timer can jump back to full
+  //    duration instead of showing what's actually left — misleading on a live-demo
+  //    screen. rP2 deliberately never answers, so the question only closes when we
+  //    force it with host:skip — otherwise this races the auto-close-on-all-answered
+  //    logic and the timing becomes non-deterministic.
+  const rHost = conn()
+  await once(rHost, "connect")
+  rHost.emit("host:create", { quizId: "mixed", locale: "en", scoringMode: "hybrid" })
+  const rGame = await once(rHost, "game:created")
+  const rP1 = conn()
+  await once(rP1, "connect")
+  rP1.emit("player:join", { pin: rGame.pin, username: "Recon" })
+  await once(rP1, "player:joined")
+  const rP2 = conn()
+  await once(rP2, "connect")
+  rP2.emit("player:join", { pin: rGame.pin, username: "Steady" })
+  await once(rP2, "player:joined")
+
+  rHost.emit("host:start")
+  const firstQ = await once(rP1, "game:question")
+  await wait(1500) // let real time pass mid-question before the blip
+  rP1.emit("player:answer", { answers: [0] }) // banks an answer before the blip
+  await wait(200)
+  rP1.io.engine.close() // simulate a real transport drop (wifi blip), not a clean disconnect
+  await new Promise((res) => {
+    rP1.once("connect", res)
+    setTimeout(res, 5000)
+  })
+  const resynced = await once(rP1, "game:resumed", 3000).catch(() => null)
+  log(
+    !!resynced && resynced.remainingSec < firstQ.time,
+    `reconnect resynced timer to ${resynced?.remainingSec}s (question is ${firstQ.time}s) — not reset to full duration`,
+  )
+
+  const rResultP = once(rP1, "player:result", 4000)
+  rHost.emit("host:skip") // force this question closed deterministically, no timer/auto-close race
+  const rResult = await rResultP.catch(() => null)
+  log(
+    typeof rResult?.correct === "boolean" && rResult?.rank > 0,
+    `player:result delivered after reconnect (not dropped from scoring) — correct=${rResult?.correct}, gained=${rResult?.gained}, rank=${rResult?.rank}`,
+  )
+
+  rHost.close()
+  rP1.close()
+  rP2.close()
+
   // SECURITY: join flood triggers rate-limit
   const flood = conn()
   await once(flood, "connect")

@@ -41,6 +41,7 @@ export class Game {
   private explanation?: string
   private paused = false
   private remainingMs = 0
+  private lastPublicQuestion: PublicQuestion | null = null
 
   constructor(
     private readonly io: Server,
@@ -136,6 +137,7 @@ export class Game {
       answers: displayAnswers,
       time: q.time,
     }
+    this.lastPublicQuestion = pub
     this.io.to(this.pin).emit(S2C.QUESTION, pub)
     this.timer = setTimeout(() => this.closeQuestion(), q.time * 1000)
   }
@@ -189,6 +191,25 @@ export class Game {
     this.questionStart = Date.now() - (this.currentQuestion.time * 1000 - this.remainingMs)
     this.timer = setTimeout(() => this.closeQuestion(), this.remainingMs)
     this.io.to(this.pin).emit(S2C.RESUMED, { remainingSec: Math.ceil(this.remainingMs / 1000) })
+  }
+
+  /**
+   * State to replay to a single socket that just reconnected mid-question. A
+   * question shown before a drop is never re-delivered by socket.io's own
+   * missed-event replay (it wasn't missed — it arrived before the drop), so
+   * without this a reconnecting client's local timer stays frozen at
+   * whatever it last showed instead of catching up to the server's clock.
+   */
+  currentQuestionSnapshot(): { question: PublicQuestion; remainingSec: number; paused: boolean } | null {
+    if (this.phase !== "question" || !this.lastPublicQuestion) return null
+    const remainingMs = this.paused
+      ? this.remainingMs
+      : Math.max(0, this.currentQuestion.time * 1000 - (Date.now() - this.questionStart))
+    return {
+      question: this.lastPublicQuestion,
+      remainingSec: Math.ceil(remainingMs / 1000),
+      paused: this.paused,
+    }
   }
 
   closeQuestion(): void {
