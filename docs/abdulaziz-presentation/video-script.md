@@ -18,12 +18,12 @@
 > "Darsdagi oddiy test — zerikarli. O'quvchilar telefoniga qarab o'tiradi. Xo'sh, agar o'sha telefonning o'zi darsni o'yinga aylantirsa-chi?"
 
 ### 0:12–0:22 — Yechim (mahsulotni tanishtirish)
-**Ekranda:** CodeClash bosh sahifasi. Ikkita katta tugma ko'rsatiladi: **"Ishtirokchi"** va **"Lobbi yaratish"**.
+**Ekranda:** CodeClash bosh sahifasi. Ikkita katta tugma ko'rsatiladi: **"Men ishtirokchiman"** va **"O'yin yaratish"**.
 **Zakadr:**
-> "Bu — CodeClash. Kahoot uslubidagi jonli IT-viktorina. Mavzu: HTML, CSS, JavaScript va React. Ikki xil rejim bor: o'yinga qo'shilish yoki o'z lobbingni yaratish."
+> "Bu — CodeClash. Kahoot uslubidagi jonli IT-viktorina. Mavzu: HTML, CSS, JavaScript va React. Ikki xil rejim bor: o'yinga qo'shilish yoki o'z o'yiningni yaratish."
 
 ### 0:22–0:35 — Boshlovchi lobbi yaratadi
-**Ekranda (noutbuk):** "Lobbi yaratish" bosiladi → ekranda **6 xonali PIN-kod** paydo bo'ladi. (Til almashtirgichni ham ko'rsat: o'zbek / rus / ingliz.)
+**Ekranda (noutbuk):** "O'yin yaratish" bosiladi → ekranda **6 xonali PIN-kod** paydo bo'ladi. (Til almashtirgichni ham ko'rsat: o'zbek / rus / ingliz.)
 **Zakadr:**
 > "Boshlovchi bir tugma bosadi — va 6 xonali kod paydo bo'ladi. Interfeys uch tilda: o'zbek, rus, ingliz."
 
