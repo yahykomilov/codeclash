@@ -419,31 +419,52 @@ export default function Host() {
   if (phase === "reveal" && question && reveal) {
     const maxVotes = Math.max(1, ...reveal.votes)
     return (
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex flex-1 flex-col items-center justify-center gap-8">
-          <h1 className="max-w-3xl text-center font-display text-2xl font-bold sm:text-4xl">
+      <div className="flex flex-1 flex-col items-center gap-6 p-6">
+        {board.length > 0 && (
+          <div className="w-full max-w-md">
+            <p className="mb-2 text-center font-bold uppercase tracking-widest opacity-60">
+              {t("game.leaderboard")}
+            </p>
+            <div className="space-y-1.5">
+              {board.slice(0, 5).map((e) => (
+                <div
+                  key={e.id}
+                  className="flex animate-pop-in items-center justify-between rounded-xl bg-white/5 px-4 py-2.5 ring-1 ring-white/10"
+                >
+                  <span className="font-display font-bold">
+                    {e.rank}. {e.username}
+                  </span>
+                  <span className="font-display font-bold text-brand-light">{e.points}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-4">
+          <h2 className="text-center font-display text-lg font-bold opacity-80 sm:text-xl">
             {question.question}
-          </h1>
-          <div className="grid w-full max-w-3xl grid-cols-2 gap-4">
+          </h2>
+          <div className="grid w-full grid-cols-2 gap-2.5">
             {question.answers.map((ans, i) => {
               const isCorrect = reveal.correct.includes(i)
               return (
                 <div
                   key={i}
-                  className={`rounded-2xl p-5 text-white shadow-lg transition ${TILES[i % 4]} ${
-                    isCorrect ? "ring-4 ring-white" : "opacity-40"
+                  className={`rounded-xl p-3 text-sm text-white shadow-md transition ${TILES[i % 4]} ${
+                    isCorrect ? "ring-2 ring-white" : "opacity-40"
                   }`}
                 >
                   <div className="flex items-center justify-between font-bold">
                     <span className="flex items-center gap-2">
-                      <span className="text-2xl">{SHAPES[i % 4]}</span>
+                      <span className="text-base">{SHAPES[i % 4]}</span>
                       {ans}
                     </span>
                     <span>{isCorrect ? "✓" : ""}</span>
                   </div>
-                  <div className="mt-2 h-2 rounded-full bg-black/30">
+                  <div className="mt-1.5 h-1.5 rounded-full bg-black/30">
                     <div
-                      className="h-2 rounded-full bg-white"
+                      className="h-1.5 rounded-full bg-white"
                       style={{ width: `${(reveal.votes[i] / maxVotes) * 100}%` }}
                     />
                   </div>
@@ -453,36 +474,16 @@ export default function Host() {
           </div>
 
           {reveal.explanation && (
-            <div className="max-w-2xl rounded-2xl bg-brand/15 px-5 py-3 text-center ring-1 ring-brand-light/30">
+            <div className="max-w-2xl rounded-xl bg-brand/15 px-4 py-2 text-center text-sm ring-1 ring-brand-light/30">
               <span className="font-bold text-brand-light">{t("game.why")}: </span>
               {reveal.explanation}
             </div>
           )}
+        </div>
 
-          {board.length > 0 && (
-            <div className="w-full max-w-md">
-              <p className="mb-2 text-center font-bold opacity-80">{t("game.leaderboard")}</p>
-              <div className="space-y-1">
-                {board.slice(0, 5).map((e) => (
-                  <div
-                    key={e.id}
-                    className="flex items-center justify-between rounded-lg bg-white/5 px-4 py-2"
-                  >
-                    <span className="font-bold">
-                      {e.rank}. {e.username}
-                    </span>
-                    <span className="text-brand-light">{e.points}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-        <div className="mt-4 flex justify-center">
-          <Button onClick={() => emit(C2S.HOST_NEXT)} className="px-10 text-lg">
-            {t("host.next")}
-          </Button>
-        </div>
+        <Button onClick={() => emit(C2S.HOST_NEXT)} className="px-10 text-lg">
+          {t("host.next")}
+        </Button>
       </div>
     )
   }
