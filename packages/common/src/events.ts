@@ -11,7 +11,6 @@ export const C2S = {
   HOST_KICK: "host:kick",
   HOST_PAUSE: "host:pause",
   HOST_RESUME: "host:resume",
-  HOST_RECONNECT: "host:reconnect",
   PLAYER_JOIN: "player:join",
   PLAYER_ANSWER: "player:answer",
 } as const
@@ -21,20 +20,17 @@ export const S2C = {
   GAME_CREATED: "game:created",
   PLAYERS: "game:players",
   PLAYER_JOINED: "game:playerJoined",
-  PLAYER_LEFT: "game:playerLeft",
   // Flow
   STARTED: "game:started",
   QUESTION: "game:question",
   PAUSED: "game:paused",
   RESUMED: "game:resumed",
-  TIMER: "game:timer",
   ANSWER_COUNT: "game:answerCount",
   REVEAL: "game:reveal",
   LEADERBOARD: "game:leaderboard",
   FINISHED: "game:finished",
   // Player-directed
   JOINED: "player:joined",
-  ANSWER_ACK: "player:answerAck",
   PLAYER_RESULT: "player:result",
   KICKED: "player:kicked",
   // Errors
